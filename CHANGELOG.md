@@ -1,3 +1,12 @@
+# Version 0.2.0 (16/06/2020)
+
+## Alfi Maulana
+
+- Modify `shisen::Camera`.
+  - add ability to close the camera device.
+  - add ability to change the camera properties.
+  - modify the camera properties using parameters.
+
 # Version 0.1.0 (11/06/2020)
 
 ## Alfi Maulana
