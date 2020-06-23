@@ -38,11 +38,6 @@ namespace shisen
 
     std::shared_ptr<OnSetParametersCallbackHandle> on_set_parameter_handler;
 
-    std::shared_ptr<rclcpp::AsyncParametersClient> parameter_client;
-
-    std::shared_ptr<rclcpp::Subscription<rcl_interfaces::msg::ParameterEvent>>
-      parameter_event_subscription;
-
     std::shared_ptr<rclcpp::Publisher<sensor_msgs::msg::CompressedImage>>
       compressed_image_publisher;
 

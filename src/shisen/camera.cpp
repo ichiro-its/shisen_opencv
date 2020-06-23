@@ -4,6 +4,7 @@
 #include <opencv2/imgproc.hpp>
 
 #include <chrono>
+#include <stdexcept>
 #include <vector>
 
 using namespace shisen;
@@ -16,53 +17,49 @@ Camera::Camera(std::string node_name) : rclcpp::Node(node_name)
   }
 
   on_set_parameter_handler = this->add_on_set_parameters_callback(
-    [this](std::vector<rclcpp::Parameter> parameters) {
+    [this](const std::vector<rclcpp::Parameter> &parameters) {
       auto result = rcl_interfaces::msg::SetParametersResult();
       result.successful = true;
 
-      for (auto parameter : parameters) {
-        auto pair = property_names.find(parameter.get_name());
-        if (pair == property_names.end())
-          continue;
+      try {
+        auto &casted_parameters = const_cast<std::vector<rclcpp::Parameter> &>(parameters);
+        for (auto &parameter : casted_parameters) {
+          auto pair = property_names.find(parameter.get_name());
+          if (pair == property_names.end())
+            continue;
 
-        if (parameter.get_type() != rclcpp::ParameterType::PARAMETER_DOUBLE) {
-          RCLCPP_WARN(get_logger(), "rejecting non double property parameter change");
-          result.successful = false;
+          if (!video_capture.isOpened())
+            throw std::runtime_error("video capture had not been opened");
+
+          double value = 0.0;
+          switch (parameter.get_type()) {
+            case rclcpp::ParameterType::PARAMETER_DOUBLE:
+              value = parameter.as_double();
+              break;
+
+            case rclcpp::ParameterType::PARAMETER_INTEGER:
+              value = (double)parameter.as_int();
+              break;
+
+            default:
+              throw std::runtime_error("invalid parameter type");
+          }
+
+          int property = pair->second;
+
+          video_capture.set(property, value);
+          value = video_capture.get(property);
+
+          parameter = rclcpp::Parameter(parameter.get_name(), value);
         }
+      }
+      catch (std::exception &e) {
+        RCLCPP_WARN(get_logger(), e.what());
+        result.reason = e.what();
+        result.successful = false;
       }
 
       return result;
-    }
-  );
-
-  parameter_client = std::make_shared<rclcpp::AsyncParametersClient>(this);
-
-  parameter_event_subscription = parameter_client->on_parameter_event(
-    [this](const std::shared_ptr<rcl_interfaces::msg::ParameterEvent> event) {
-      if (event->node != get_fully_qualified_name())
-        return;
-
-      for (auto &changed_parameter : event->changed_parameters) {
-        auto pair = property_names.find(changed_parameter.name);
-        if (pair == property_names.end())
-          continue;
-
-        int property = pair->second;
-
-        if (video_capture.isOpened()) {
-          double value = video_capture.get(property);
-          if (changed_parameter.value.double_value == value)
-            continue;
-
-          if (video_capture.set(property, changed_parameter.value.double_value)) {
-            double value = video_capture.get(property);
-            this->set_parameter(rclcpp::Parameter(changed_parameter.name, value));
-          }
-        }
-        else {
-          RCLCPP_WARN(get_logger(), "video capture had not been opened");
-        }
-      }
     }
   );
 
