@@ -3,7 +3,8 @@
 
 #include <opencv2/videoio.hpp>
 #include <rclcpp/rclcpp.hpp>
-#include <sensor_msgs/msg/compressed_image.hpp>
+#include <shisen_interfaces/msg/compressed_image.hpp>
+#include <shisen_interfaces/msg/raw_image.hpp>
 
 #include <map>
 #include <memory>
@@ -38,7 +39,10 @@ namespace shisen
 
     std::shared_ptr<OnSetParametersCallbackHandle> on_set_parameter_handler;
 
-    std::shared_ptr<rclcpp::Publisher<sensor_msgs::msg::CompressedImage>>
+    std::shared_ptr<rclcpp::Publisher<shisen_interfaces::msg::RawImage>>
+      raw_image_publisher;
+
+    std::shared_ptr<rclcpp::Publisher<shisen_interfaces::msg::CompressedImage>>
       compressed_image_publisher;
 
     std::shared_ptr<rclcpp::TimerBase> capture_timer;

@@ -1,3 +1,19 @@
+# Version 0.3.0 (30/06/2020)
+
+## Alfi Maulana
+
+- Separate package to be `shisen` and `shisen_interfaces`.
+  - `shisen` contains the main tools implementation.
+  - `shisen_interfaces` contains ros 2 interfaces used by `shisen`.
+- Add `shisen_interfaces` that contains interfaces that handle image transport.
+- replace `sensor_msgs::msg::CompressedImage` with `shisen_interfaces::msg::CompressedImage`.
+- Add ability to publish raw image in the `shisen::Camera`
+  using and `shisen_interfaces::msg::RawImage`.
+- Add `shisen::RawViewer` class.
+  - subscribe to an `shisen_interfaces::msg::RawImage`.
+  - work just like `shisen::CompressedViewer` but using raw data
+    instead of the encoded one.
+
 # Version 0.2.1 (23/06/2020)
 
 ## Alfi Maulana

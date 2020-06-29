@@ -31,6 +31,9 @@ Camera::Camera(std::string node_name) : rclcpp::Node(node_name)
           if (!video_capture.isOpened())
             throw std::runtime_error("video capture had not been opened");
 
+          RCLCPP_DEBUG_STREAM(get_logger(), "request to modify " << parameter.get_name()
+            << " to " << parameter.value_to_string());
+
           double value = 0.0;
           switch (parameter.get_type()) {
             case rclcpp::ParameterType::PARAMETER_DOUBLE:
@@ -51,6 +54,9 @@ Camera::Camera(std::string node_name) : rclcpp::Node(node_name)
           value = video_capture.get(property);
 
           parameter = rclcpp::Parameter(parameter.get_name(), value);
+
+          RCLCPP_DEBUG_STREAM(get_logger(), parameter.get_name()
+            << " modified to " << parameter.value_to_string());
         }
       }
       catch (std::exception &e) {
@@ -63,7 +69,14 @@ Camera::Camera(std::string node_name) : rclcpp::Node(node_name)
     }
   );
 
-  compressed_image_publisher = this->create_publisher<sensor_msgs::msg::CompressedImage>(
+  raw_image_publisher = this->create_publisher<shisen_interfaces::msg::RawImage>(
+    node_name + "/raw_image", 10
+  );
+
+  RCLCPP_INFO_STREAM(get_logger(), "publishing raw image on "
+    << raw_image_publisher->get_topic_name());
+
+  compressed_image_publisher = this->create_publisher<shisen_interfaces::msg::CompressedImage>(
     node_name + "/compressed_image", 10
   );
 
@@ -78,20 +91,33 @@ Camera::Camera(std::string node_name) : rclcpp::Node(node_name)
     video_capture.read(captured_frame);
 
     if (!captured_frame.empty()) {
-      sensor_msgs::msg::CompressedImage message;
+      {
+        shisen_interfaces::msg::RawImage message;
 
-      message.format = "jpg";
+        message.type = captured_frame.type();
+        message.cols = captured_frame.cols;
+        message.rows = captured_frame.rows;
 
-      std::vector<unsigned char> bytes;
-      cv::imencode(".jpg", captured_frame, bytes, { cv::IMWRITE_JPEG_QUALITY, 50 });
-      message.data = bytes;
+        auto size = captured_frame.total() * captured_frame.elemSize();
+        message.data.assign(captured_frame.data, captured_frame.data + size);
 
-      compressed_image_publisher->publish(message);
+        raw_image_publisher->publish(message);
+      }
 
-      RCLCPP_DEBUG(get_logger(), "image captured and published");
+      {
+        shisen_interfaces::msg::CompressedImage message;
+
+        std::vector<unsigned char> bytes;
+        cv::imencode(".jpg", captured_frame, bytes, { cv::IMWRITE_JPEG_QUALITY, 50 });
+        message.data = bytes;
+
+        compressed_image_publisher->publish(message);
+      }
+
+      RCLCPP_DEBUG_ONCE(get_logger(), "once, image captured and published");
     }
     else {
-      RCLCPP_WARN(get_logger(), "empty image captured");
+      RCLCPP_WARN_ONCE(get_logger(), "once, empty image captured");
     }
   });
 }

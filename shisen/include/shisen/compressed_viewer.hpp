@@ -2,7 +2,7 @@
 #define SHISEN__COMPRESSED_VIEWER_HPP_
 
 #include <rclcpp/rclcpp.hpp>
-#include <sensor_msgs/msg/compressed_image.hpp>
+#include <shisen_interfaces/msg/compressed_image.hpp>
 
 #include <memory>
 #include <string>
@@ -17,7 +17,7 @@ namespace shisen
 
   private:
 
-    std::shared_ptr<rclcpp::Subscription<sensor_msgs::msg::CompressedImage>>
+    std::shared_ptr<rclcpp::Subscription<shisen_interfaces::msg::CompressedImage>>
       compressed_image_subscription;
   };
 }
