@@ -1,0 +1,2 @@
+Property[] changed
+string[] deleted

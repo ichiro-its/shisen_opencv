@@ -19,7 +19,11 @@ find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/CompressedImage.msg"
+  "msg/Property.msg"
+  "msg/PropertyEvent.msg"
   "msg/RawImage.msg"
+  "srv/GetProperties.srv"
+  "srv/SetProperties.srv"
 )
 
 ament_export_dependencies(rosidl_default_runtime)

@@ -1,3 +1,13 @@
+# Version 0.4.0
+
+- Add interfaces that handle properties in the `shisen_interfaces`.
+- Change `shisen::Camera` to `shisen::VideoCapturer`.
+  - add boolean return in `open()` and `close()`.
+  - video capture properties will be handled by message and service properties
+    instead of ROS 2 parameter.
+- Merge `shisen::CompressedViewer` and `shisen::RawViewer`
+  into `shisen::ImageViewer`.
+
 # Version 0.3.0 (30/06/2020)
 
 ## Alfi Maulana
@@ -6,9 +16,9 @@
   - `shisen` contains the main tools implementation.
   - `shisen_interfaces` contains ros 2 interfaces used by `shisen`.
 - Add `shisen_interfaces` that contains interfaces that handle image transport.
-- replace `sensor_msgs::msg::CompressedImage` with `shisen_interfaces::msg::CompressedImage`.
+- Replace `sensor_msgs::msg::CompressedImage` with `shisen_interfaces::msg::CompressedImage`.
 - Add ability to publish raw image in the `shisen::Camera`
-  using and `shisen_interfaces::msg::RawImage`.
+  using an `shisen_interfaces::msg::RawImage`.
 - Add `shisen::RawViewer` class.
   - subscribe to an `shisen_interfaces::msg::RawImage`.
   - work just like `shisen::CompressedViewer` but using raw data
