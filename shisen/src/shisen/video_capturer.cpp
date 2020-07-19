@@ -11,53 +11,64 @@ using namespace shisen;
 using namespace std::chrono_literals;
 
 const std::map<std::string, int> VideoCapturer::property_ids = {
-  { "pos_msec", cv::CAP_PROP_POS_MSEC },
-  { "pos_frames", cv::CAP_PROP_POS_FRAMES },
-  { "pos_avi_ratio", cv::CAP_PROP_POS_AVI_RATIO },
-  { "frame_width", cv::CAP_PROP_FRAME_WIDTH },
-  { "frame_height", cv::CAP_PROP_FRAME_HEIGHT },
-  { "fps", cv::CAP_PROP_FPS },
-  { "fourcc", cv::CAP_PROP_FOURCC },
-  { "frame_count", cv::CAP_PROP_FRAME_COUNT },
-  { "format", cv::CAP_PROP_FORMAT },
-  { "mode", cv::CAP_PROP_MODE },
+  // preprocess Effect
   { "brightness", cv::CAP_PROP_BRIGHTNESS },
   { "contrast", cv::CAP_PROP_CONTRAST },
   { "saturation", cv::CAP_PROP_SATURATION },
   { "hue", cv::CAP_PROP_HUE },
   { "gain", cv::CAP_PROP_GAIN },
   { "exposure", cv::CAP_PROP_EXPOSURE },
-  { "convert_rgb", cv::CAP_PROP_CONVERT_RGB },
-  { "white_balance_blue_u", cv::CAP_PROP_WHITE_BALANCE_BLUE_U },
-  { "rectification", cv::CAP_PROP_RECTIFICATION },
-  { "monochrome", cv::CAP_PROP_MONOCHROME },
   { "sharpness", cv::CAP_PROP_SHARPNESS },
-  { "auto_exposure", cv::CAP_PROP_AUTO_EXPOSURE },
-  { "gamma", cv::CAP_PROP_GAMMA },
   { "temperature", cv::CAP_PROP_TEMPERATURE },
-  { "trigger", cv::CAP_PROP_TRIGGER },
-  { "trigger_delay", cv::CAP_PROP_TRIGGER_DELAY },
-  { "white_balance_red_v", cv::CAP_PROP_WHITE_BALANCE_RED_V },
-  { "zoom", cv::CAP_PROP_ZOOM },
-  { "focus", cv::CAP_PROP_FOCUS },
-  { "guid", cv::CAP_PROP_GUID },
-  { "iso_speed", cv::CAP_PROP_ISO_SPEED },
+
+  // capture setting
+  { "fps", cv::CAP_PROP_FPS },
   { "backlight", cv::CAP_PROP_BACKLIGHT },
+  { "autofocus", cv::CAP_PROP_AUTOFOCUS },
+  { "auto_wb", cv::CAP_PROP_AUTO_WB },
+  { "auto_exposure", cv::CAP_PROP_AUTO_EXPOSURE },
+
+  // capture position
+  { "pos_msec", cv::CAP_PROP_POS_MSEC },
+  { "pos_frames", cv::CAP_PROP_POS_FRAMES },
+  { "pos_avi_ratio", cv::CAP_PROP_POS_AVI_RATIO },
+
+  // frame size
+  { "frame_width", cv::CAP_PROP_FRAME_WIDTH },
+  { "frame_height", cv::CAP_PROP_FRAME_HEIGHT },
+
+  // camera transform
+  { "focus", cv::CAP_PROP_FOCUS },
+  { "zoom", cv::CAP_PROP_ZOOM },
   { "pan", cv::CAP_PROP_PAN },
   { "tilt", cv::CAP_PROP_TILT },
   { "roll", cv::CAP_PROP_ROLL },
-  { "iris", cv::CAP_PROP_IRIS },
-  { "settings", cv::CAP_PROP_SETTINGS },
-  { "buffersize", cv::CAP_PROP_BUFFERSIZE },
-  { "autofocus", cv::CAP_PROP_AUTOFOCUS },
-  { "sar_num", cv::CAP_PROP_SAR_NUM },
-  { "sar_den", cv::CAP_PROP_SAR_DEN },
-  { "backend", cv::CAP_PROP_BACKEND },
-  { "channel", cv::CAP_PROP_CHANNEL },
-  { "auto_wb", cv::CAP_PROP_AUTO_WB },
-  { "wb_temperature", cv::CAP_PROP_WB_TEMPERATURE },
-  { "codec_pixel_format", cv::CAP_PROP_CODEC_PIXEL_FORMAT },
-  { "bitrate", cv::CAP_PROP_BITRATE }
+
+  // unused for now
+  // { "fourcc", cv::CAP_PROP_FOURCC },
+  // { "frame_count", cv::CAP_PROP_FRAME_COUNT },
+  // { "format", cv::CAP_PROP_FORMAT },
+  // { "mode", cv::CAP_PROP_MODE },
+  // { "convert_rgb", cv::CAP_PROP_CONVERT_RGB },
+  // { "white_balance_blue_u", cv::CAP_PROP_WHITE_BALANCE_BLUE_U },
+  // { "rectification", cv::CAP_PROP_RECTIFICATION },
+  // { "monochrome", cv::CAP_PROP_MONOCHROME },
+  // { "gamma", cv::CAP_PROP_GAMMA },
+  // { "trigger", cv::CAP_PROP_TRIGGER },
+  // { "trigger_delay", cv::CAP_PROP_TRIGGER_DELAY },
+  // { "white_balance_red_v", cv::CAP_PROP_WHITE_BALANCE_RED_V },
+  // { "guid", cv::CAP_PROP_GUID },
+  // { "iso_speed", cv::CAP_PROP_ISO_SPEED },
+  // { "iris", cv::CAP_PROP_IRIS },
+  // { "settings", cv::CAP_PROP_SETTINGS },
+  // { "buffersize", cv::CAP_PROP_BUFFERSIZE },
+  // { "sar_num", cv::CAP_PROP_SAR_NUM },
+  // { "sar_den", cv::CAP_PROP_SAR_DEN },
+  // { "backend", cv::CAP_PROP_BACKEND },
+  // { "channel", cv::CAP_PROP_CHANNEL },
+  // { "wb_temperature", cv::CAP_PROP_WB_TEMPERATURE },
+  // { "codec_pixel_format", cv::CAP_PROP_CODEC_PIXEL_FORMAT },
+  // { "bitrate", cv::CAP_PROP_BITRATE }
 };
 
 VideoCapturer::VideoCapturer(std::string node_name) : rclcpp::Node(node_name)
@@ -113,14 +124,11 @@ VideoCapturer::VideoCapturer(std::string node_name) : rclcpp::Node(node_name)
               if (id == property_ids.end())
                 continue;
 
-              double value = video_capture.get(id->second);
-              if (value != prop.second) {
-                shisen_interfaces::msg::Property property;
-                property.name = prop.first;
-                property.value = prop.second = value;
+              shisen_interfaces::msg::Property property;
+              property.name = prop.first;
+              property.value = prop.second = video_capture.get(id->second);
 
-                message.changed.push_back(property);
-              }
+              message.changed.push_back(property);
             }
 
             // only publish the event message if there are some changes
@@ -167,14 +175,64 @@ VideoCapturer::VideoCapturer(std::string node_name) : rclcpp::Node(node_name)
             video_capture.set(id->second, property.value);
             double value = video_capture.get(id->second);
 
-            if (value != prop->second) {
-              property.value = prop->second = value;
-              message.changed.push_back(property);
+            property.value = prop->second = value;
+            message.changed.push_back(property);
+
+            switch (id->second) {
+              // changes on frame width would affect frame height
+              case cv::CAP_PROP_FRAME_WIDTH: {
+                shisen_interfaces::msg::Property property;
+                property.name = "frame_height";
+                property.value = video_capture.get(cv::CAP_PROP_FRAME_HEIGHT);
+                message.changed.push_back(property);
+                break;
+              }
+
+              // changes on frame height would affect frame width
+              case cv::CAP_PROP_FRAME_HEIGHT: {
+                shisen_interfaces::msg::Property property;
+                property.name = "frame_width";
+                property.value = video_capture.get(cv::CAP_PROP_FRAME_WIDTH);
+                message.changed.push_back(property);
+                break;
+              }
+
+              // changes on auto white balance would affect temperature
+              case cv::CAP_PROP_AUTO_WB: {
+                double value = video_capture.get(cv::CAP_PROP_TEMPERATURE);
+                if (video_capture.set(cv::CAP_PROP_TEMPERATURE, value)) {
+                  shisen_interfaces::msg::Property property;
+                  property.name = "temperature";
+                  property.value = property_map["temperature"] = value;
+                  message.changed.push_back(property);
+                }
+                else {
+                  property_map.erase("temperature");
+                  message.deleted.push_back("temperature");
+                }
+                break;
+              }
+
+              // changes on auto focus would affect focus
+              case cv::CAP_PROP_AUTOFOCUS: {
+                double value = video_capture.get(cv::CAP_PROP_FOCUS);
+                if (video_capture.set(cv::CAP_PROP_FOCUS, value)) {
+                  shisen_interfaces::msg::Property property;
+                  property.name = "focus";
+                  property.value = property_map["focus"] = value;
+                  message.changed.push_back(property);
+                }
+                else {
+                  property_map.erase("focus");
+                  message.deleted.push_back("focus");
+                }
+                break;
+              }
             }
           }
 
           // only publish the event message if there are some changes
-          if (message.changed.size() > 0) {
+          if (message.changed.size() > 0 || message.deleted.size() > 0) {
             property_event_publisher->publish(message);
           }
         }
