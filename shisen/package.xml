@@ -6,13 +6,11 @@
   <description>A camera tools for ROS 2</description>
   <maintainer email="alfi.maulana.f@gmail.com">Alfi Maulana</maintainer>
   <license>MIT License</license>
-
-  <buildtool_depend>ament_cmake</buildtool_depend>
-
-  <depend>opencv</depend>
+  <buildtool_depend>ament_cmake_ros</buildtool_depend>
   <depend>rclcpp</depend>
   <depend>shisen_interfaces</depend>
-
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>
