@@ -30,20 +30,20 @@
 
 namespace shisen
 {
-  class ImageViewer : public rclcpp::Node
-  {
-  public:
 
-    ImageViewer(std::string node_name, std::string topic_name);
+class ImageViewer : public rclcpp::Node
+{
+public:
+  ImageViewer(std::string node_name, std::string topic_name);
 
-  private:
+private:
+  std::shared_ptr<rclcpp::Subscription<shisen_interfaces::msg::RawImage>>
+  raw_image_subscription;
 
-    std::shared_ptr<rclcpp::Subscription<shisen_interfaces::msg::RawImage>>
-      raw_image_subscription;
+  std::shared_ptr<rclcpp::Subscription<shisen_interfaces::msg::CompressedImage>>
+  compressed_image_subscription;
+};
 
-    std::shared_ptr<rclcpp::Subscription<shisen_interfaces::msg::CompressedImage>>
-      compressed_image_subscription;
-  };
-}
+}  // namespace shisen
 
-#endif
+#endif  // SHISEN__IMAGE_VIEWER_HPP_

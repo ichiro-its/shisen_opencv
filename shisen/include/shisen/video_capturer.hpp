@@ -35,41 +35,41 @@
 
 namespace shisen
 {
-  class VideoCapturer : public rclcpp::Node
-  {
-  public:
 
-    VideoCapturer(std::string node_name);
-    ~VideoCapturer();
+class VideoCapturer : public rclcpp::Node
+{
+public:
+  explicit VideoCapturer(std::string node_name);
+  ~VideoCapturer();
 
-    bool open(std::string file_name);
-    bool close();
+  bool open(std::string file_name);
+  bool close();
 
-  private:
+private:
+  static const std::map<std::string, int> property_ids;
 
-    static const std::map<std::string, int> property_ids;
+  cv::VideoCapture video_capture;
 
-    cv::VideoCapture video_capture;
+  std::map<std::string, double> property_map;
 
-    std::map<std::string, double> property_map;
+  std::shared_ptr<rclcpp::Publisher<shisen_interfaces::msg::RawImage>>
+  raw_image_publisher;
 
-    std::shared_ptr<rclcpp::Publisher<shisen_interfaces::msg::RawImage>>
-      raw_image_publisher;
+  std::shared_ptr<rclcpp::Publisher<shisen_interfaces::msg::CompressedImage>>
+  compressed_image_publisher;
 
-    std::shared_ptr<rclcpp::Publisher<shisen_interfaces::msg::CompressedImage>>
-      compressed_image_publisher;
+  std::shared_ptr<rclcpp::Publisher<shisen_interfaces::msg::PropertyEvent>>
+  property_event_publisher;
 
-    std::shared_ptr<rclcpp::Publisher<shisen_interfaces::msg::PropertyEvent>>
-      property_event_publisher;
+  std::shared_ptr<rclcpp::Service<shisen_interfaces::srv::GetProperties>>
+  get_properties_service;
 
-    std::shared_ptr<rclcpp::Service<shisen_interfaces::srv::GetProperties>>
-      get_properties_service;
+  std::shared_ptr<rclcpp::Service<shisen_interfaces::srv::SetProperties>>
+  set_properties_service;
 
-    std::shared_ptr<rclcpp::Service<shisen_interfaces::srv::SetProperties>>
-      set_properties_service;
+  std::shared_ptr<rclcpp::TimerBase> capture_timer;
+};
 
-    std::shared_ptr<rclcpp::TimerBase> capture_timer;
-  };
-}
+}  // namespace shisen
 
-#endif
+#endif  // SHISEN__VIDEO_CAPTURER_HPP_

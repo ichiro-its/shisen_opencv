@@ -24,7 +24,7 @@
 #include <memory>
 #include <string>
 
-int main(int argc, char **argv)
+int main(int argc, char ** argv)
 {
   if (argc < 2) {
     std::cout << "Usage: ros2 run shisen image_viewer <topic_name>" << std::endl;
