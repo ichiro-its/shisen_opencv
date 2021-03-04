@@ -18,8 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN__VIDEO_CAPTURER_HPP_
-#define SHISEN__VIDEO_CAPTURER_HPP_
+#ifndef SHISEN__CAMERA_HPP_
+#define SHISEN__CAMERA_HPP_
 
 #include <opencv2/videoio.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -72,4 +72,4 @@ private:
 
 }  // namespace shisen
 
-#endif  // SHISEN__VIDEO_CAPTURER_HPP_
+#endif  // SHISEN__CAMERA_HPP_
