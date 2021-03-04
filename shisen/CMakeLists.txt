@@ -21,7 +21,7 @@ find_package(rclcpp REQUIRED)
 find_package(shisen_interfaces REQUIRED)
 
 add_library(${PROJECT_NAME}
-  "src/${PROJECT_NAME}/video_capturer.cpp"
+  "src/${PROJECT_NAME}/camera.cpp"
   "src/${PROJECT_NAME}/image_viewer.cpp"
 )
 
@@ -43,11 +43,11 @@ install(TARGETS ${PROJECT_NAME}
   LIBRARY DESTINATION "lib"
   RUNTIME DESTINATION "bin")
 
-add_executable(video_capturer "src/video_capturer_main.cpp")
-target_include_directories(video_capturer PUBLIC
+add_executable(camera "src/camera_main.cpp")
+target_include_directories(camera PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-target_link_libraries(video_capturer ${PROJECT_NAME})
+target_link_libraries(camera ${PROJECT_NAME})
 
 add_executable(image_viewer "src/image_viewer_main.cpp")
 target_include_directories(image_viewer PUBLIC
@@ -55,7 +55,7 @@ target_include_directories(image_viewer PUBLIC
   $<INSTALL_INTERFACE:include>)
 target_link_libraries(image_viewer ${PROJECT_NAME})
 
-install(TARGETS video_capturer image_viewer
+install(TARGETS camera image_viewer
   DESTINATION "lib/${PROJECT_NAME}")
 
 if(BUILD_TESTING)

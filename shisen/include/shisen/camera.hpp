@@ -36,11 +36,11 @@
 namespace shisen
 {
 
-class VideoCapturer : public rclcpp::Node
+class Camera : public rclcpp::Node
 {
 public:
-  explicit VideoCapturer(std::string node_name);
-  ~VideoCapturer();
+  explicit Camera(std::string node_name);
+  ~Camera();
 
   bool open(std::string file_name);
   bool close();

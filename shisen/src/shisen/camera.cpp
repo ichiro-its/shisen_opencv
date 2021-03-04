@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "shisen/video_capturer.hpp"
+#include "shisen/camera.hpp"
 
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
@@ -35,7 +35,7 @@ using namespace std::chrono_literals;
 namespace shisen
 {
 
-const std::map<std::string, int> VideoCapturer::property_ids = {
+const std::map<std::string, int> Camera::property_ids = {
   // preprocess Effect
   {"brightness", cv::CAP_PROP_BRIGHTNESS},
   {"contrast", cv::CAP_PROP_CONTRAST},
@@ -52,11 +52,6 @@ const std::map<std::string, int> VideoCapturer::property_ids = {
   {"autofocus", cv::CAP_PROP_AUTOFOCUS},
   {"auto_wb", cv::CAP_PROP_AUTO_WB},
   {"auto_exposure", cv::CAP_PROP_AUTO_EXPOSURE},
-
-  // capture position
-  {"pos_msec", cv::CAP_PROP_POS_MSEC},
-  {"pos_frames", cv::CAP_PROP_POS_FRAMES},
-  {"pos_avi_ratio", cv::CAP_PROP_POS_AVI_RATIO},
 
   // frame size
   {"frame_width", cv::CAP_PROP_FRAME_WIDTH},
@@ -96,7 +91,7 @@ const std::map<std::string, int> VideoCapturer::property_ids = {
   // {"bitrate", cv::CAP_PROP_BITRATE}
 };
 
-VideoCapturer::VideoCapturer(std::string node_name)
+Camera::Camera(std::string node_name)
 : rclcpp::Node(node_name)
 {
   // initialize the raw image publisher
@@ -314,14 +309,14 @@ VideoCapturer::VideoCapturer(std::string node_name)
   );
 }
 
-VideoCapturer::~VideoCapturer()
+Camera::~Camera()
 {
   if (video_capture.isOpened()) {
     close();
   }
 }
 
-bool VideoCapturer::open(std::string file_name)
+bool Camera::open(std::string file_name)
 {
   if (!video_capture.isOpened()) {
     if (video_capture.open(file_name)) {
@@ -375,7 +370,7 @@ bool VideoCapturer::open(std::string file_name)
   return false;
 }
 
-bool VideoCapturer::close()
+bool Camera::close()
 {
   if (video_capture.isOpened()) {
     video_capture.release();
