@@ -22,7 +22,7 @@ find_package(shisen_interfaces REQUIRED)
 
 add_library(${PROJECT_NAME}
   "src/${PROJECT_NAME}/camera.cpp"
-  "src/${PROJECT_NAME}/image_viewer.cpp"
+  "src/${PROJECT_NAME}/viewer.cpp"
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -49,13 +49,13 @@ target_include_directories(camera PUBLIC
   $<INSTALL_INTERFACE:include>)
 target_link_libraries(camera ${PROJECT_NAME})
 
-add_executable(image_viewer "src/image_viewer_main.cpp")
-target_include_directories(image_viewer PUBLIC
+add_executable(viewer "src/viewer_main.cpp")
+target_include_directories(viewer PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-target_link_libraries(image_viewer ${PROJECT_NAME})
+target_link_libraries(viewer ${PROJECT_NAME})
 
-install(TARGETS camera image_viewer
+install(TARGETS camera viewer
   DESTINATION "lib/${PROJECT_NAME}")
 
 if(BUILD_TESTING)

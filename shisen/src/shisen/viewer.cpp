@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "shisen/image_viewer.hpp"
+#include "shisen/viewer.hpp"
 
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -32,7 +32,7 @@ namespace shisen
 using shisen_interfaces::msg::CompressedImage;
 using shisen_interfaces::msg::RawImage;
 
-ImageViewer::ImageViewer(std::string node_name, std::string topic_name)
+Viewer::Viewer(std::string node_name, std::string topic_name)
 : rclcpp::Node(node_name)
 {
   raw_image_subscription = this->create_subscription<RawImage>(

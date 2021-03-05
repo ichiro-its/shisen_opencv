@@ -18,8 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN__IMAGE_VIEWER_HPP_
-#define SHISEN__IMAGE_VIEWER_HPP_
+#ifndef SHISEN__VIEWER_HPP_
+#define SHISEN__VIEWER_HPP_
 
 #include <rclcpp/rclcpp.hpp>
 #include <shisen_interfaces/msg/compressed_image.hpp>
@@ -31,10 +31,10 @@
 namespace shisen
 {
 
-class ImageViewer : public rclcpp::Node
+class Viewer : public rclcpp::Node
 {
 public:
-  ImageViewer(std::string node_name, std::string topic_name);
+  Viewer(std::string node_name, std::string topic_name);
 
 private:
   std::shared_ptr<rclcpp::Subscription<shisen_interfaces::msg::RawImage>>
@@ -46,4 +46,4 @@ private:
 
 }  // namespace shisen
 
-#endif  // SHISEN__IMAGE_VIEWER_HPP_
+#endif  // SHISEN__VIEWER_HPP_
