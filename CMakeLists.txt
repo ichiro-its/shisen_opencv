@@ -22,8 +22,7 @@ find_package(shisen_interfaces REQUIRED)
 
 add_library(${PROJECT_NAME}
   "src/${PROJECT_NAME}/camera.cpp"
-  "src/${PROJECT_NAME}/viewer.cpp"
-)
+  "src/${PROJECT_NAME}/viewer.cpp")
 
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -32,8 +31,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 ament_target_dependencies(${PROJECT_NAME}
   OpenCV
   rclcpp
-  shisen_interfaces
-)
+  shisen_interfaces)
 
 install(DIRECTORY "include" DESTINATION ".")
 
