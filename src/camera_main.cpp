@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 
 #include <rclcpp/rclcpp.hpp>
-#include <shisen/camera.hpp>
+#include <shisen_opencv/camera.hpp>
 
 #include <memory>
 #include <string>
@@ -27,7 +27,7 @@
 int main(int argc, char ** argv)
 {
   if (argc < 2) {
-    std::cout << "Usage: ros2 run shisen camera <file_name>" << std::endl;
+    std::cout << "Usage: ros2 run shisen_opencv camera <file_name>" << std::endl;
     return 1;
   }
 
@@ -35,7 +35,7 @@ int main(int argc, char ** argv)
 
   rclcpp::init(argc, argv);
 
-  auto camera = std::make_shared<shisen::Camera>("camera");
+  auto camera = std::make_shared<shisen_opencv::Camera>("camera");
 
   if (camera->open(file_name)) {
     rclcpp::spin(camera);

@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "shisen/camera.hpp"
+#include "shisen_opencv/camera.hpp"
 
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
@@ -32,7 +32,7 @@
 
 using namespace std::chrono_literals;
 
-namespace shisen
+namespace shisen_opencv
 {
 
 const std::map<std::string, int> Camera::property_ids = {
@@ -386,4 +386,4 @@ bool Camera::close()
   return false;
 }
 
-}  // namespace shisen
+}  // namespace shisen_opencv

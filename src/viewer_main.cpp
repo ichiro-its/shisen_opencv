@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 
 #include <rclcpp/rclcpp.hpp>
-#include <shisen/viewer.hpp>
+#include <shisen_opencv/viewer.hpp>
 
 #include <memory>
 #include <string>
@@ -27,7 +27,7 @@
 int main(int argc, char ** argv)
 {
   if (argc < 2) {
-    std::cout << "Usage: ros2 run shisen viewer <topic_name>" << std::endl;
+    std::cout << "Usage: ros2 run shisen_opencv viewer <topic_name>" << std::endl;
     return 1;
   }
 
@@ -35,7 +35,7 @@ int main(int argc, char ** argv)
 
   rclcpp::init(argc, argv);
 
-  auto viewer = std::make_shared<shisen::Viewer>(
+  auto viewer = std::make_shared<shisen_opencv::Viewer>(
     "viewer", topic_name
   );
 
