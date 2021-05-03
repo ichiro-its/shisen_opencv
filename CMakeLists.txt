@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(shisen)
+project(shisen_opencv)
 
 if(NOT CMAKE_C_STANDARD)
   set(CMAKE_C_STANDARD 99)
@@ -20,6 +20,8 @@ find_package(OpenCV REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(shisen_interfaces REQUIRED)
 
+install(DIRECTORY "include" DESTINATION ".")
+
 add_library(${PROJECT_NAME}
   "src/${PROJECT_NAME}/camera.cpp"
   "src/${PROJECT_NAME}/viewer.cpp")
@@ -29,11 +31,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(${PROJECT_NAME}
-  OpenCV
-  rclcpp
-  shisen_interfaces)
-
-install(DIRECTORY "include" DESTINATION ".")
+  OpenCV rclcpp shisen_interfaces)
 
 install(TARGETS ${PROJECT_NAME}
   EXPORT export_${PROJECT_NAME}
@@ -61,7 +59,8 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-ament_export_dependencies(rclcpp shisen_interfaces)
+ament_export_dependencies(OpenCV rclcpp shisen_interfaces)
 ament_export_include_directories("include")
 ament_export_libraries(${PROJECT_NAME})
+
 ament_package()

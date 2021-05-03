@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "shisen/viewer.hpp"
+#include "shisen_opencv/viewer.hpp"
 
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -26,7 +26,7 @@
 #include <memory>
 #include <string>
 
-namespace shisen
+namespace shisen_opencv
 {
 
 using shisen_interfaces::msg::CompressedImage;
@@ -75,4 +75,4 @@ Viewer::Viewer(std::string node_name, std::string topic_name)
       compressed_image_subscription->get_topic_name());
 }
 
-}  // namespace shisen
+}  // namespace shisen_opencv
