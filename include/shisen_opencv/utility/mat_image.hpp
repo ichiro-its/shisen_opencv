@@ -18,9 +18,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN_OPENCV__SHISEN_OPENCV_HPP_
-#define SHISEN_OPENCV__SHISEN_OPENCV_HPP_
+#ifndef SHISEN_OPENCV__UTILITY__MAT_IMAGE_HPP_
+#define SHISEN_OPENCV__UTILITY__MAT_IMAGE_HPP_
 
-#include "./utility/mat_image.hpp"
+#include <shisen_cpp/shisen_cpp.hpp>
+#include <opencv2/core.hpp>
 
-#endif  // SHISEN_OPENCV__SHISEN_OPENCV_HPP_
+namespace shisen_opencv
+{
+
+class MatImage
+{
+public:
+  MatImage();
+  explicit MatImage(const shisen_cpp::CompressedImage & compressed_image);
+  explicit MatImage(const shisen_cpp::RawImage & raw_image);
+  explicit MatImage(cv::Mat mat);
+
+  operator shisen_cpp::CompressedImage() const;
+  operator shisen_cpp::RawImage() const;
+  operator cv::Mat() const;
+
+  const MatImage & operator=(const shisen_cpp::CompressedImage & compressed_image);
+  const MatImage & operator=(const shisen_cpp::RawImage & raw_image);
+  const MatImage & operator=(cv::Mat mat);
+
+// private:
+  cv::Mat mat;
+};
+
+}  // namespace shisen_opencv
+
+#endif  // SHISEN_OPENCV__UTILITY__MAT_IMAGE_HPP_
