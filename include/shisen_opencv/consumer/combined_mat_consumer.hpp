@@ -37,13 +37,13 @@ class CombinedMatConsumer
 {
 public:
   inline explicit CombinedMatConsumer(
-    rclcpp::Node::SharedPtr node, bool enable_raw = true, bool enable_compressed = true,
-    const std::string & prefix = shisen_cpp::CAMERA_PREFIX);
+    rclcpp::Node::SharedPtr node, const bool & enable_raw = true,
+    const bool & enable_compressed = true, const std::string & prefix = shisen_cpp::CAMERA_PREFIX);
 
   inline virtual void on_mat_changed(cv::Mat mat);
 
-  inline void enable_raw(bool enable);
-  inline void enable_compressed(bool enable);
+  inline void enable_raw(const bool & enable);
+  inline void enable_compressed(const bool & enable);
 
   inline rclcpp::Node::SharedPtr get_node() const;
 
@@ -64,7 +64,8 @@ private:
 };
 
 CombinedMatConsumer::CombinedMatConsumer(
-  rclcpp::Node::SharedPtr node, bool enable_raw, bool enable_compressed, const std::string & prefix)
+  rclcpp::Node::SharedPtr node, const bool & enable_raw,
+  const bool & enable_compressed, const std::string & prefix)
 : node(node),
   prefix(prefix)
 {
@@ -76,7 +77,7 @@ void CombinedMatConsumer::on_mat_changed(cv::Mat /*mat*/)
 {
 }
 
-void CombinedMatConsumer::enable_raw(bool enable)
+void CombinedMatConsumer::enable_raw(const bool & enable)
 {
   if (enable) {
     member_raw_mat_provider = std::make_shared<MemberRawdMatConsumer>(node, prefix);
@@ -91,7 +92,7 @@ void CombinedMatConsumer::enable_raw(bool enable)
   }
 }
 
-void CombinedMatConsumer::enable_compressed(bool enable)
+void CombinedMatConsumer::enable_compressed(const bool & enable)
 {
   if (enable) {
     member_compressed_mat_provider = std::make_shared<MemberCompressedMatConsumer>(node, prefix);

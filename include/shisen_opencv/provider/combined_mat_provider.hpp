@@ -37,11 +37,11 @@ class CombinedMatProvider
 {
 public:
   inline explicit CombinedMatProvider(
-    rclcpp::Node::SharedPtr node, bool enable_raw = true, bool enable_compressed = true,
-    const std::string & prefix = shisen_cpp::CAMERA_PREFIX);
+    rclcpp::Node::SharedPtr node, const bool & enable_raw = true,
+    const bool & enable_compressed = true, const std::string & prefix = shisen_cpp::CAMERA_PREFIX);
 
-  inline void enable_raw(bool enable);
-  inline void enable_compressed(bool enable);
+  inline void enable_raw(const bool & enable);
+  inline void enable_compressed(const bool & enable);
 
   inline void set_mat_image(const MatImage & mat_image);
   inline void set_mat(cv::Mat mat);
@@ -65,7 +65,8 @@ private:
 };
 
 CombinedMatProvider::CombinedMatProvider(
-  rclcpp::Node::SharedPtr node, bool enable_raw, bool enable_compressed, const std::string & prefix)
+  rclcpp::Node::SharedPtr node, const bool & enable_raw,
+  const bool & enable_compressed, const std::string & prefix)
 : node(node),
   prefix(prefix)
 {
@@ -73,7 +74,7 @@ CombinedMatProvider::CombinedMatProvider(
   this->enable_compressed(enable_compressed);
 }
 
-void CombinedMatProvider::enable_raw(bool enable)
+void CombinedMatProvider::enable_raw(const bool & enable)
 {
   if (enable) {
     raw_mat_provider = std::make_shared<RawMatProvider>(node, prefix);
@@ -82,7 +83,7 @@ void CombinedMatProvider::enable_raw(bool enable)
   }
 }
 
-void CombinedMatProvider::enable_compressed(bool enable)
+void CombinedMatProvider::enable_compressed(const bool & enable)
 {
   if (enable) {
     compressed_mat_provider = std::make_shared<CompressedMatProvider>(node, prefix);

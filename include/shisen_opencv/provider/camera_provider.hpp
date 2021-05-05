@@ -18,17 +18,46 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN_OPENCV__SHISEN_OPENCV_HPP_
-#define SHISEN_OPENCV__SHISEN_OPENCV_HPP_
+#ifndef SHISEN_OPENCV__PROVIDER__CAMERA_PROVIDER_HPP_
+#define SHISEN_OPENCV__PROVIDER__CAMERA_PROVIDER_HPP_
 
-#include "./consumer/combined_mat_consumer.hpp"
-#include "./consumer/mat_consumer.hpp"
-#include "./consumer/member_mat_consumer.hpp"
+#include <rclcpp/rclcpp.hpp>
+#include <shisen_cpp/shisen_cpp.hpp>
 
-#include "./provider/camera_provider.hpp"
-#include "./provider/combined_mat_provider.hpp"
-#include "./provider/mat_provider.hpp"
+#include <string>
 
-#include "./utility.hpp"
+#include "./combined_mat_provider.hpp"
 
-#endif  // SHISEN_OPENCV__SHISEN_OPENCV_HPP_
+namespace shisen_opencv
+{
+
+class CameraProvider : public CombinedMatProvider, public shisen_cpp::CaptureSettingProvider
+{
+public:
+  inline explicit CameraProvider(
+    rclcpp::Node::SharedPtr node, const bool & enable_raw = true,
+    const bool & enable_compressed = true, const std::string & prefix = shisen_cpp::CAMERA_PREFIX);
+
+  inline rclcpp::Node::SharedPtr get_node() const;
+
+private:
+  rclcpp::Node::SharedPtr node;
+};
+
+CameraProvider::CameraProvider(
+  rclcpp::Node::SharedPtr node, const bool & enable_raw,
+  const bool & enable_compressed, const std::string & prefix)
+: CombinedMatProvider(node, enable_raw, enable_compressed, prefix),
+  CaptureSettingProvider(node, prefix),
+  node(node)
+{
+}
+
+inline rclcpp::Node::SharedPtr CameraProvider::get_node() const
+{
+  return node;
+}
+
+}  // namespace shisen_opencv
+
+#endif  // SHISEN_OPENCV__PROVIDER__CAMERA_PROVIDER_HPP_
