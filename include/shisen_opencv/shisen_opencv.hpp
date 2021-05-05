@@ -23,6 +23,7 @@
 
 #include "./consumer/mat_consumer.hpp"
 
+#include "./provider/combined_mat_provider.hpp"
 #include "./provider/mat_provider.hpp"
 
 #include "./utility.hpp"

@@ -38,6 +38,7 @@ TEST(CompileTest, Provider) {
   try {
     auto node = std::make_shared<rclcpp::Node>("compile_test");
 
+    std::make_shared<shisen_opencv::CombinedMatProvider>(node);
     std::make_shared<shisen_opencv::CompressedMatProvider>(node);
     std::make_shared<shisen_opencv::RawMatProvider>(node);
   } catch (...) {

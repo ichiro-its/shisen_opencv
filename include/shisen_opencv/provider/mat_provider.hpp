@@ -45,7 +45,7 @@ public:
   inline explicit MatProvider(
     rclcpp::Node::SharedPtr node, const std::string & prefix = shisen_cpp::CAMERA_PREFIX);
 
-  inline void set_mat_image(const MatImage & mat);
+  inline void set_mat_image(const MatImage & mat_image);
   inline void set_mat(cv::Mat mat);
 
   inline const MatImage & get_mat_image() const;
@@ -62,10 +62,10 @@ MatProvider<T>::MatProvider(rclcpp::Node::SharedPtr node, const std::string & pr
 }
 
 template<typename T>
-void MatProvider<T>::set_mat_image(const MatImage & mat)
+void MatProvider<T>::set_mat_image(const MatImage & mat_image)
 {
-  current_mat_image = mat;
-  set_image((T)get_mat_image());
+  current_mat_image = mat_image;
+  this->set_image((T)get_mat_image());
 }
 
 template<typename T>
