@@ -18,30 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include <rclcpp/rclcpp.hpp>
-#include <shisen_opencv/camera.hpp>
+#include <gtest/gtest.h>
 
-#include <memory>
-#include <string>
-
-int main(int argc, char ** argv)
-{
-  if (argc < 2) {
-    std::cout << "Usage: ros2 run shisen_opencv camera <file_name>" << std::endl;
-    return 1;
-  }
-
-  std::string file_name = argv[1];
-
-  rclcpp::init(argc, argv);
-
-  auto camera = std::make_shared<shisen_opencv::Camera>("camera");
-
-  if (camera->open(file_name)) {
-    rclcpp::spin(camera);
-  }
-
-  rclcpp::shutdown();
-
-  return 0;
+TEST(CompileTest, Empty) {
 }
