@@ -1,6 +1,7 @@
 # Shisen OpenCV
 
 [![latest version](https://img.shields.io/github/v/release/ichiro-its/shisen_opencv)](https://github.com/ichiro-its/shisen_opencv/releases/)
+[![commits since latest version](https://img.shields.io/github/commits-since/ichiro-its/shisen_opencv/latest)](https://github.com/ichiro-its/shisen_opencv/commits/master)
 [![milestone](https://img.shields.io/github/milestones/progress/ichiro-its/shisen_opencv/1?label=milestone)](https://github.com/ichiro-its/shisen_opencv/milestone/1)
 [![license](https://img.shields.io/github/license/ichiro-its/shisen_opencv)](./LICENSE)
 [![test status](https://img.shields.io/github/workflow/status/ichiro-its/shisen_opencv/Build%20and%20Test?label=test)](https://github.com/ichiro-its/shisen_opencv/actions)
