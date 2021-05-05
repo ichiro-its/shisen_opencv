@@ -43,7 +43,7 @@ public:
   const MatImage & operator=(const shisen_cpp::RawImage & raw_image);
   const MatImage & operator=(cv::Mat mat);
 
-// private:
+private:
   cv::Mat mat;
 };
 

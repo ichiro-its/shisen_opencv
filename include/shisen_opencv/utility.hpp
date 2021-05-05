@@ -18,18 +18,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include <gtest/gtest.h>
-#include <rclcpp/rclcpp.hpp>
-#include <shisen_opencv/shisen_opencv.hpp>
+#ifndef SHISEN_OPENCV__UTILITY_HPP_
+#define SHISEN_OPENCV__UTILITY_HPP_
 
-#include <memory>
+#include "./utility/mat_image.hpp"
 
-TEST(CompileTest, Provider) {
-  try {
-    auto node = std::make_shared<rclcpp::Node>("compile_test");
-
-    std::make_shared<shisen_opencv::CompressedMatProvider>(node);
-    std::make_shared<shisen_opencv::RawMatProvider>(node);
-  } catch (...) {
-  }
-}
+#endif  // SHISEN_OPENCV__UTILITY_HPP_
