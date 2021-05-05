@@ -36,9 +36,15 @@ namespace shisen_opencv
 class CombinedMatConsumer
 {
 public:
+  struct Options
+    : public virtual CombinedMatOptions,
+    public virtual MemberRawMatConsumer::Options,
+    public virtual MemberCompressedMatConsumer::Options
+  {
+  };
+
   inline explicit CombinedMatConsumer(
-    rclcpp::Node::SharedPtr node, const bool & enable_raw = true,
-    const bool & enable_compressed = true, const std::string & prefix = shisen_cpp::CAMERA_PREFIX);
+    rclcpp::Node::SharedPtr node, const Options & options = Options());
 
   inline virtual void on_mat_changed(cv::Mat mat);
 
@@ -55,22 +61,21 @@ public:
 
 private:
   rclcpp::Node::SharedPtr node;
-  std::string prefix;
+  Options options;
 
-  std::shared_ptr<MemberRawdMatConsumer> member_raw_mat_provider;
+  std::shared_ptr<MemberRawMatConsumer> member_raw_mat_provider;
   std::shared_ptr<MemberCompressedMatConsumer> member_compressed_mat_provider;
 
   MatImage current_mat_image;
 };
 
 CombinedMatConsumer::CombinedMatConsumer(
-  rclcpp::Node::SharedPtr node, const bool & enable_raw,
-  const bool & enable_compressed, const std::string & prefix)
+  rclcpp::Node::SharedPtr node, const CombinedMatConsumer::Options & options)
 : node(node),
-  prefix(prefix)
+  options(options)
 {
-  this->enable_raw(enable_raw);
-  this->enable_compressed(enable_compressed);
+  this->enable_raw(options.enable_raw);
+  this->enable_compressed(options.enable_compressed);
 }
 
 void CombinedMatConsumer::on_mat_changed(cv::Mat /*mat*/)
@@ -80,7 +85,7 @@ void CombinedMatConsumer::on_mat_changed(cv::Mat /*mat*/)
 void CombinedMatConsumer::enable_raw(const bool & enable)
 {
   if (enable) {
-    member_raw_mat_provider = std::make_shared<MemberRawdMatConsumer>(node, prefix);
+    member_raw_mat_provider = std::make_shared<MemberRawMatConsumer>(node, options);
 
     // Set on mat changed callback
     member_raw_mat_provider->set_on_mat_changed(
@@ -95,7 +100,7 @@ void CombinedMatConsumer::enable_raw(const bool & enable)
 void CombinedMatConsumer::enable_compressed(const bool & enable)
 {
   if (enable) {
-    member_compressed_mat_provider = std::make_shared<MemberCompressedMatConsumer>(node, prefix);
+    member_compressed_mat_provider = std::make_shared<MemberCompressedMatConsumer>(node, options);
 
     // Set on mat changed callback
     member_compressed_mat_provider->set_on_mat_changed(

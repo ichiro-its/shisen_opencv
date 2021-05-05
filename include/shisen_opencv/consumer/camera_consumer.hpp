@@ -34,9 +34,14 @@ namespace shisen_opencv
 class CameraConsumer : public CombinedMatConsumer, public shisen_cpp::CaptureSettingConsumer
 {
 public:
+  struct Options
+    : public virtual CombinedMatConsumer::Options,
+    public virtual shisen_cpp::CaptureSettingConsumer::Options
+  {
+  };
+
   inline explicit CameraConsumer(
-    rclcpp::Node::SharedPtr node, const bool & enable_raw = true,
-    const bool & enable_compressed = true, const std::string & prefix = shisen_cpp::CAMERA_PREFIX);
+    rclcpp::Node::SharedPtr node, const Options & options = Options());
 
   inline rclcpp::Node::SharedPtr get_node() const;
 
@@ -45,10 +50,9 @@ private:
 };
 
 CameraConsumer::CameraConsumer(
-  rclcpp::Node::SharedPtr node, const bool & enable_raw,
-  const bool & enable_compressed, const std::string & prefix)
-: CombinedMatConsumer(node, enable_raw, enable_compressed, prefix),
-  CaptureSettingConsumer(node, prefix),
+  rclcpp::Node::SharedPtr node, const CameraConsumer::Options & options)
+: CombinedMatConsumer(node, options),
+  CaptureSettingConsumer(node, options),
   node(node)
 {
 }

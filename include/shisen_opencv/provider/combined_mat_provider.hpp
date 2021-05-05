@@ -23,7 +23,6 @@
 
 #include <opencv2/core.hpp>
 #include <rclcpp/rclcpp.hpp>
-#include <shisen_cpp/shisen_cpp.hpp>
 
 #include <memory>
 #include <string>
@@ -36,9 +35,15 @@ namespace shisen_opencv
 class CombinedMatProvider
 {
 public:
+  struct Options
+    : public virtual CombinedMatOptions,
+    public virtual RawMatProvider::Options,
+    public virtual CompressedMatProvider::Options
+  {
+  };
+
   inline explicit CombinedMatProvider(
-    rclcpp::Node::SharedPtr node, const bool & enable_raw = true,
-    const bool & enable_compressed = true, const std::string & prefix = shisen_cpp::CAMERA_PREFIX);
+    rclcpp::Node::SharedPtr node, const Options & options = Options());
 
   inline void enable_raw(const bool & enable);
   inline void enable_compressed(const bool & enable);
@@ -56,7 +61,7 @@ public:
 
 private:
   rclcpp::Node::SharedPtr node;
-  std::string prefix;
+  Options options;
 
   std::shared_ptr<RawMatProvider> raw_mat_provider;
   std::shared_ptr<CompressedMatProvider> compressed_mat_provider;
@@ -65,19 +70,18 @@ private:
 };
 
 CombinedMatProvider::CombinedMatProvider(
-  rclcpp::Node::SharedPtr node, const bool & enable_raw,
-  const bool & enable_compressed, const std::string & prefix)
+  rclcpp::Node::SharedPtr node, const CombinedMatProvider::Options & options)
 : node(node),
-  prefix(prefix)
+  options(options)
 {
-  this->enable_raw(enable_raw);
-  this->enable_compressed(enable_compressed);
+  this->enable_raw(options.enable_raw);
+  this->enable_compressed(options.enable_compressed);
 }
 
 void CombinedMatProvider::enable_raw(const bool & enable)
 {
   if (enable) {
-    raw_mat_provider = std::make_shared<RawMatProvider>(node, prefix);
+    raw_mat_provider = std::make_shared<RawMatProvider>(node, options);
   } else {
     raw_mat_provider = nullptr;
   }
@@ -86,7 +90,7 @@ void CombinedMatProvider::enable_raw(const bool & enable)
 void CombinedMatProvider::enable_compressed(const bool & enable)
 {
   if (enable) {
-    compressed_mat_provider = std::make_shared<CompressedMatProvider>(node, prefix);
+    compressed_mat_provider = std::make_shared<CompressedMatProvider>(node, options);
   } else {
     compressed_mat_provider = nullptr;
   }

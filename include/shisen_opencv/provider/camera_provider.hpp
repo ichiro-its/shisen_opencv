@@ -31,12 +31,17 @@
 namespace shisen_opencv
 {
 
-class CameraProvider : public CombinedMatProvider, public shisen_cpp::CaptureSettingProvider
+class CameraProvider : public virtual CombinedMatProvider, public shisen_cpp::CaptureSettingProvider
 {
 public:
+  struct Options
+    : public virtual CombinedMatProvider::Options,
+    public virtual CaptureSettingProvider::Options
+  {
+  };
+
   inline explicit CameraProvider(
-    rclcpp::Node::SharedPtr node, const bool & enable_raw = true,
-    const bool & enable_compressed = true, const std::string & prefix = shisen_cpp::CAMERA_PREFIX);
+    rclcpp::Node::SharedPtr node, const Options & options = Options());
 
   inline rclcpp::Node::SharedPtr get_node() const;
 
@@ -45,10 +50,9 @@ private:
 };
 
 CameraProvider::CameraProvider(
-  rclcpp::Node::SharedPtr node, const bool & enable_raw,
-  const bool & enable_compressed, const std::string & prefix)
-: CombinedMatProvider(node, enable_raw, enable_compressed, prefix),
-  CaptureSettingProvider(node, prefix),
+  rclcpp::Node::SharedPtr node, const CameraProvider::Options & options)
+: CombinedMatProvider(node, options),
+  CaptureSettingProvider(node, options),
   node(node)
 {
 }

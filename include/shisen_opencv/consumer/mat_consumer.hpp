@@ -42,8 +42,12 @@ template<typename T>
 class MatConsumer : public shisen_cpp::ImageConsumer<T>
 {
 public:
+  struct Options : public virtual shisen_cpp::ImageConsumer<T>::Options
+  {
+  };
+
   inline explicit MatConsumer(
-    rclcpp::Node::SharedPtr node, const std::string & prefix = shisen_cpp::CAMERA_PREFIX);
+    rclcpp::Node::SharedPtr node, const Options & options = Options());
 
   inline void on_image_changed(const T & image) override;
   inline virtual void on_mat_changed(cv::Mat mat);
@@ -56,8 +60,8 @@ private:
 };
 
 template<typename T>
-MatConsumer<T>::MatConsumer(rclcpp::Node::SharedPtr node, const std::string & prefix)
-: shisen_cpp::ImageConsumer<T>(node, prefix)
+MatConsumer<T>::MatConsumer(rclcpp::Node::SharedPtr node, const MatConsumer<T>::Options & options)
+: shisen_cpp::ImageConsumer<T>(node, options)
 {
 }
 

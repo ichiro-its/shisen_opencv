@@ -36,7 +36,7 @@ template<typename T>
 class MemberMatConsumer;
 
 using MemberCompressedMatConsumer = MemberMatConsumer<shisen_cpp::CompressedImage>;
-using MemberRawdMatConsumer = MemberMatConsumer<shisen_cpp::RawImage>;
+using MemberRawMatConsumer = MemberMatConsumer<shisen_cpp::RawImage>;
 
 template<typename T>
 class MemberMatConsumer : public MatConsumer<T>
@@ -44,8 +44,12 @@ class MemberMatConsumer : public MatConsumer<T>
 public:
   using MatCallback = std::function<void (cv::Mat)>;
 
+  struct Options : public virtual MatConsumer<T>::Options
+  {
+  };
+
   inline explicit MemberMatConsumer(
-    rclcpp::Node::SharedPtr node, const std::string & prefix = shisen_cpp::CAMERA_PREFIX);
+    rclcpp::Node::SharedPtr node, const Options & options = Options());
 
   inline void on_mat_changed(cv::Mat mat) override;
 
@@ -56,8 +60,9 @@ private:
 };
 
 template<typename T>
-MemberMatConsumer<T>::MemberMatConsumer(rclcpp::Node::SharedPtr node, const std::string & prefix)
-: MatConsumer<T>(node, prefix)
+MemberMatConsumer<T>::MemberMatConsumer(
+  rclcpp::Node::SharedPtr node, const MemberMatConsumer::Options & options)
+: MatConsumer<T>(node, options)
 {
 }
 

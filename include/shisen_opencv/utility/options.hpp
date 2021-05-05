@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2021 ICHIRO ITS
+// Copyright (c) 2021 ICHIRO ITS
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -18,10 +18,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN_OPENCV__UTILITY_HPP_
-#define SHISEN_OPENCV__UTILITY_HPP_
+#ifndef SHISEN_OPENCV__UTILITY__OPTIONS_HPP_
+#define SHISEN_OPENCV__UTILITY__OPTIONS_HPP_
 
-#include "./utility/options.hpp"
-#include "./utility/mat_image.hpp"
+#include <string>
 
-#endif  // SHISEN_OPENCV__UTILITY_HPP_
+namespace shisen_opencv
+{
+
+struct CombinedMatOptions
+{
+  bool enable_raw;
+  bool enable_compressed;
+
+  CombinedMatOptions()
+  : enable_raw(true),
+    enable_compressed(true)
+  {
+  }
+};
+
+}  // namespace shisen_opencv
+
+#endif  // SHISEN_OPENCV__UTILITY__OPTIONS_HPP_

@@ -42,8 +42,12 @@ template<typename T>
 class MatProvider : public shisen_cpp::ImageProvider<T>
 {
 public:
+  struct Options : public virtual shisen_cpp::ImageProvider<T>::Options
+  {
+  };
+
   inline explicit MatProvider(
-    rclcpp::Node::SharedPtr node, const std::string & prefix = shisen_cpp::CAMERA_PREFIX);
+    rclcpp::Node::SharedPtr node, const Options & options = Options());
 
   inline void set_mat_image(const MatImage & mat_image);
   inline void set_mat(cv::Mat mat);
@@ -56,8 +60,8 @@ private:
 };
 
 template<typename T>
-MatProvider<T>::MatProvider(rclcpp::Node::SharedPtr node, const std::string & prefix)
-: shisen_cpp::ImageProvider<T>(node, prefix)
+MatProvider<T>::MatProvider(rclcpp::Node::SharedPtr node, const MatProvider<T>::Options & options)
+: shisen_cpp::ImageProvider<T>(node, options)
 {
 }
 
