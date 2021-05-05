@@ -18,8 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN_OPENCV__VIEWER_HPP_
-#define SHISEN_OPENCV__VIEWER_HPP_
+#ifndef SHISEN_OPENCV__NODE__VIEWER_HPP_
+#define SHISEN_OPENCV__NODE__VIEWER_HPP_
 
 #include <rclcpp/rclcpp.hpp>
 #include <shisen_interfaces/msg/compressed_image.hpp>
@@ -46,4 +46,4 @@ private:
 
 }  // namespace shisen_opencv
 
-#endif  // SHISEN_OPENCV__VIEWER_HPP_
+#endif  // SHISEN_OPENCV__NODE__VIEWER_HPP_

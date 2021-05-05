@@ -18,11 +18,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN_OPENCV__SHISEN_OPENCV_HPP_
-#define SHISEN_OPENCV__SHISEN_OPENCV_HPP_
+#ifndef SHISEN_OPENCV__PROVIDER_HPP_
+#define SHISEN_OPENCV__PROVIDER_HPP_
 
-#include "./consumer.hpp"
-#include "./provider.hpp"
-#include "./utility.hpp"
+#include "./provider/camera_provider.hpp"
+#include "./provider/combined_mat_provider.hpp"
+#include "./provider/mat_provider.hpp"
 
-#endif  // SHISEN_OPENCV__SHISEN_OPENCV_HPP_
+#endif  // SHISEN_OPENCV__PROVIDER_HPP_

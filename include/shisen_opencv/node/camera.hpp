@@ -18,8 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN_OPENCV__CAMERA_HPP_
-#define SHISEN_OPENCV__CAMERA_HPP_
+#ifndef SHISEN_OPENCV__NODE__CAMERA_HPP_
+#define SHISEN_OPENCV__NODE__CAMERA_HPP_
 
 #include <opencv2/videoio.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -72,4 +72,4 @@ private:
 
 }  // namespace shisen_opencv
 
-#endif  // SHISEN_OPENCV__CAMERA_HPP_
+#endif  // SHISEN_OPENCV__NODE__CAMERA_HPP_
