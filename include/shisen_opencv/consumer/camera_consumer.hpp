@@ -18,34 +18,46 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include <gtest/gtest.h>
+#ifndef SHISEN_OPENCV__CONSUMER__CAMERA_CONSUMER_HPP_
+#define SHISEN_OPENCV__CONSUMER__CAMERA_CONSUMER_HPP_
+
 #include <rclcpp/rclcpp.hpp>
-#include <shisen_opencv/shisen_opencv.hpp>
+#include <shisen_cpp/shisen_cpp.hpp>
 
-#include <memory>
+#include <string>
 
-TEST(CompileTest, Consumer) {
-  try {
-    auto node = std::make_shared<rclcpp::Node>("compile_test");
+#include "./combined_mat_consumer.hpp"
 
-    std::make_shared<shisen_opencv::CameraConsumer>(node);
-    std::make_shared<shisen_opencv::CombinedMatConsumer>(node);
-    std::make_shared<shisen_opencv::CompressedMatConsumer>(node);
-    std::make_shared<shisen_opencv::MemberCompressedMatConsumer>(node);
-    std::make_shared<shisen_opencv::MemberRawdMatConsumer>(node);
-    std::make_shared<shisen_opencv::RawMatConsumer>(node);
-  } catch (...) {
-  }
+namespace shisen_opencv
+{
+
+class CameraConsumer : public CombinedMatConsumer, public shisen_cpp::CaptureSettingConsumer
+{
+public:
+  inline explicit CameraConsumer(
+    rclcpp::Node::SharedPtr node, const bool & enable_raw = true,
+    const bool & enable_compressed = true, const std::string & prefix = shisen_cpp::CAMERA_PREFIX);
+
+  inline rclcpp::Node::SharedPtr get_node() const;
+
+private:
+  rclcpp::Node::SharedPtr node;
+};
+
+CameraConsumer::CameraConsumer(
+  rclcpp::Node::SharedPtr node, const bool & enable_raw,
+  const bool & enable_compressed, const std::string & prefix)
+: CombinedMatConsumer(node, enable_raw, enable_compressed, prefix),
+  CaptureSettingConsumer(node, prefix),
+  node(node)
+{
 }
 
-TEST(CompileTest, Provider) {
-  try {
-    auto node = std::make_shared<rclcpp::Node>("compile_test");
-
-    std::make_shared<shisen_opencv::CameraProvider>(node);
-    std::make_shared<shisen_opencv::CombinedMatProvider>(node);
-    std::make_shared<shisen_opencv::CompressedMatProvider>(node);
-    std::make_shared<shisen_opencv::RawMatProvider>(node);
-  } catch (...) {
-  }
+inline rclcpp::Node::SharedPtr CameraConsumer::get_node() const
+{
+  return node;
 }
+
+}  // namespace shisen_opencv
+
+#endif  // SHISEN_OPENCV__CONSUMER__CAMERA_CONSUMER_HPP_
