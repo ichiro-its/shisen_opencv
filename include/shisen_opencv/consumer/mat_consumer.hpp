@@ -18,8 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN_OPENCV__PROVIDER__MAT_PROVIDER_HPP_
-#define SHISEN_OPENCV__PROVIDER__MAT_PROVIDER_HPP_
+#ifndef SHISEN_OPENCV__CONSUMER__MAT_CONSUMER_HPP_
+#define SHISEN_OPENCV__CONSUMER__MAT_CONSUMER_HPP_
 
 #include <opencv2/core.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -33,20 +33,19 @@ namespace shisen_opencv
 {
 
 template<typename T>
-class MatProvider;
+class MatConsumer;
 
-using CompressedMatProvider = MatProvider<shisen_cpp::CompressedImage>;
-using RawMatProvider = MatProvider<shisen_cpp::RawImage>;
+using CompressedMatConsumer = MatConsumer<shisen_cpp::CompressedImage>;
+using RawMatConsumer = MatConsumer<shisen_cpp::RawImage>;
 
 template<typename T>
-class MatProvider : public shisen_cpp::ImageProvider<T>
+class MatConsumer : public shisen_cpp::ImageConsumer<T>
 {
 public:
-  inline explicit MatProvider(
+  inline explicit MatConsumer(
     rclcpp::Node::SharedPtr node, const std::string & prefix = shisen_cpp::CAMERA_PREFIX);
 
-  inline void set_mat_image(const MatImage & mat);
-  inline void set_mat(cv::Mat mat);
+  inline void on_image_changed(const T & image) override;
 
   inline const MatImage & get_mat_image() const;
   inline cv::Mat get_mat() const;
@@ -56,36 +55,32 @@ private:
 };
 
 template<typename T>
-MatProvider<T>::MatProvider(rclcpp::Node::SharedPtr node, const std::string & prefix)
-: shisen_cpp::ImageProvider<T>(node, prefix)
+MatConsumer<T>::MatConsumer(rclcpp::Node::SharedPtr node, const std::string & prefix)
+: shisen_cpp::ImageConsumer<T>(node, prefix)
 {
 }
 
 template<typename T>
-void MatProvider<T>::set_mat_image(const MatImage & mat)
+void MatConsumer<T>::on_image_changed(const T & image)
 {
-  current_mat_image = mat;
-  set_image((T)get_mat_image());
+  // Call parent function
+  shisen_cpp::ImageConsumer<T>::on_image_changed(image);
+
+  current_mat_image = image;
 }
 
 template<typename T>
-void MatProvider<T>::set_mat(cv::Mat mat)
-{
-  set_mat_image(mat);
-}
-
-template<typename T>
-const MatImage & MatProvider<T>::get_mat_image() const
+const MatImage & MatConsumer<T>::get_mat_image() const
 {
   return current_mat_image;
 }
 
 template<typename T>
-cv::Mat MatProvider<T>::get_mat() const
+cv::Mat MatConsumer<T>::get_mat() const
 {
   return (cv::Mat)get_mat_image();
 }
 
 }  // namespace shisen_opencv
 
-#endif  // SHISEN_OPENCV__PROVIDER__MAT_PROVIDER_HPP_
+#endif  // SHISEN_OPENCV__CONSUMER__MAT_CONSUMER_HPP_

@@ -24,6 +24,16 @@
 
 #include <memory>
 
+TEST(CompileTest, Consumer) {
+  try {
+    auto node = std::make_shared<rclcpp::Node>("compile_test");
+
+    std::make_shared<shisen_opencv::CompressedMatConsumer>(node);
+    std::make_shared<shisen_opencv::RawMatConsumer>(node);
+  } catch (...) {
+  }
+}
+
 TEST(CompileTest, Provider) {
   try {
     auto node = std::make_shared<rclcpp::Node>("compile_test");
