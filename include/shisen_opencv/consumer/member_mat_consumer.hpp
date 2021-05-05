@@ -21,6 +21,7 @@
 #ifndef SHISEN_OPENCV__CONSUMER__MEMBER_MAT_CONSUMER_HPP_
 #define SHISEN_OPENCV__CONSUMER__MEMBER_MAT_CONSUMER_HPP_
 
+#include <opencv2/core.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <shisen_cpp/shisen_cpp.hpp>
 

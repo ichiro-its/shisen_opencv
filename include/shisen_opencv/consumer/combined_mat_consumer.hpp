@@ -18,8 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN_OPENCV__PROVIDER__COMBINED_MAT_PROVIDER_HPP_
-#define SHISEN_OPENCV__PROVIDER__COMBINED_MAT_PROVIDER_HPP_
+#ifndef SHISEN_OPENCV__CONSUMER__COMBINED_MAT_CONSUMER_HPP_
+#define SHISEN_OPENCV__CONSUMER__COMBINED_MAT_CONSUMER_HPP_
 
 #include <opencv2/core.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -28,23 +28,22 @@
 #include <memory>
 #include <string>
 
-#include "./mat_provider.hpp"
+#include "./member_mat_consumer.hpp"
 
 namespace shisen_opencv
 {
 
-class CombinedMatProvider
+class CombinedMatConsumer
 {
 public:
-  inline explicit CombinedMatProvider(
+  inline explicit CombinedMatConsumer(
     rclcpp::Node::SharedPtr node, bool enable_raw = true, bool enable_compressed = true,
     const std::string & prefix = shisen_cpp::CAMERA_PREFIX);
 
+  inline virtual void on_mat_changed(cv::Mat mat);
+
   inline void enable_raw(bool enable);
   inline void enable_compressed(bool enable);
-
-  inline void set_mat_image(const MatImage & mat_image);
-  inline void set_mat(cv::Mat mat);
 
   inline rclcpp::Node::SharedPtr get_node() const;
 
@@ -58,13 +57,13 @@ private:
   rclcpp::Node::SharedPtr node;
   std::string prefix;
 
-  std::shared_ptr<RawMatProvider> raw_mat_provider;
-  std::shared_ptr<CompressedMatProvider> compressed_mat_provider;
+  std::shared_ptr<MemberRawdMatConsumer> member_raw_mat_provider;
+  std::shared_ptr<MemberCompressedMatConsumer> member_compressed_mat_provider;
 
   MatImage current_mat_image;
 };
 
-CombinedMatProvider::CombinedMatProvider(
+CombinedMatConsumer::CombinedMatConsumer(
   rclcpp::Node::SharedPtr node, bool enable_raw, bool enable_compressed, const std::string & prefix)
 : node(node),
   prefix(prefix)
@@ -73,67 +72,65 @@ CombinedMatProvider::CombinedMatProvider(
   this->enable_compressed(enable_compressed);
 }
 
-void CombinedMatProvider::enable_raw(bool enable)
+void CombinedMatConsumer::on_mat_changed(cv::Mat /*mat*/)
+{
+}
+
+void CombinedMatConsumer::enable_raw(bool enable)
 {
   if (enable) {
-    raw_mat_provider = std::make_shared<RawMatProvider>(node, prefix);
+    member_raw_mat_provider = std::make_shared<MemberRawdMatConsumer>(node, prefix);
+
+    // Set on mat changed callback
+    member_raw_mat_provider->set_on_mat_changed(
+      [this](cv::Mat mat) {
+        on_mat_changed(mat);
+      });
   } else {
-    raw_mat_provider = nullptr;
+    member_raw_mat_provider = nullptr;
   }
 }
 
-void CombinedMatProvider::enable_compressed(bool enable)
+void CombinedMatConsumer::enable_compressed(bool enable)
 {
   if (enable) {
-    compressed_mat_provider = std::make_shared<CompressedMatProvider>(node, prefix);
+    member_compressed_mat_provider = std::make_shared<MemberCompressedMatConsumer>(node, prefix);
+
+    // Set on mat changed callback
+    member_compressed_mat_provider->set_on_mat_changed(
+      [this](cv::Mat mat) {
+        on_mat_changed(mat);
+      });
   } else {
-    compressed_mat_provider = nullptr;
+    member_compressed_mat_provider = nullptr;
   }
 }
 
-void CombinedMatProvider::set_mat_image(const MatImage & mat_image)
-{
-  current_mat_image = mat_image;
-
-  if (is_raw_enabled()) {
-    raw_mat_provider->set_mat_image(get_mat_image());
-  }
-
-  if (is_compressed_enabled()) {
-    compressed_mat_provider->set_mat_image(get_mat_image());
-  }
-}
-
-void CombinedMatProvider::set_mat(cv::Mat mat)
-{
-  set_mat_image(MatImage(mat));
-}
-
-rclcpp::Node::SharedPtr CombinedMatProvider::get_node() const
+rclcpp::Node::SharedPtr CombinedMatConsumer::get_node() const
 {
   return node;
 }
 
-bool CombinedMatProvider::is_raw_enabled() const
+bool CombinedMatConsumer::is_raw_enabled() const
 {
-  return raw_mat_provider != nullptr;
+  return member_raw_mat_provider != nullptr;
 }
 
-bool CombinedMatProvider::is_compressed_enabled() const
+bool CombinedMatConsumer::is_compressed_enabled() const
 {
-  return compressed_mat_provider != nullptr;
+  return member_compressed_mat_provider != nullptr;
 }
 
-const MatImage & CombinedMatProvider::get_mat_image() const
+const MatImage & CombinedMatConsumer::get_mat_image() const
 {
   return current_mat_image;
 }
 
-cv::Mat CombinedMatProvider::get_mat() const
+cv::Mat CombinedMatConsumer::get_mat() const
 {
   return (cv::Mat)get_mat_image();
 }
 
 }  // namespace shisen_opencv
 
-#endif  // SHISEN_OPENCV__PROVIDER__COMBINED_MAT_PROVIDER_HPP_
+#endif  // SHISEN_OPENCV__CONSUMER__COMBINED_MAT_CONSUMER_HPP_
