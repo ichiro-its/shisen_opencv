@@ -18,78 +18,65 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN_OPENCV__CONSUMER__MAT_CONSUMER_HPP_
-#define SHISEN_OPENCV__CONSUMER__MAT_CONSUMER_HPP_
+#ifndef SHISEN_OPENCV__CONSUMER__MEMBER_MAT_CONSUMER_HPP_
+#define SHISEN_OPENCV__CONSUMER__MEMBER_MAT_CONSUMER_HPP_
 
-#include <opencv2/core.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <shisen_cpp/shisen_cpp.hpp>
 
 #include <string>
 
-#include "../utility.hpp"
+#include "./mat_consumer.hpp"
 
 namespace shisen_opencv
 {
 
 template<typename T>
-class MatConsumer;
+class MemberMatConsumer;
 
-using CompressedMatConsumer = MatConsumer<shisen_cpp::CompressedImage>;
-using RawMatConsumer = MatConsumer<shisen_cpp::RawImage>;
+using MemberCompressedMatConsumer = MemberMatConsumer<shisen_cpp::CompressedImage>;
+using MemberRawdMatConsumer = MemberMatConsumer<shisen_cpp::RawImage>;
 
 template<typename T>
-class MatConsumer : public shisen_cpp::ImageConsumer<T>
+class MemberMatConsumer : public MatConsumer<T>
 {
 public:
-  inline explicit MatConsumer(
+  using MatCallback = std::function<void (cv::Mat)>;
+
+  inline explicit MemberMatConsumer(
     rclcpp::Node::SharedPtr node, const std::string & prefix = shisen_cpp::CAMERA_PREFIX);
 
-  inline void on_image_changed(const T & image) override;
-  inline virtual void on_mat_changed(cv::Mat mat);
+  inline void on_mat_changed(cv::Mat mat) override;
 
-  inline const MatImage & get_mat_image() const;
-  inline cv::Mat get_mat() const;
+  inline void set_on_mat_changed(const MatCallback & callback);
 
 private:
-  MatImage current_mat_image;
+  MatCallback on_mat_changed_callback;
 };
 
 template<typename T>
-MatConsumer<T>::MatConsumer(rclcpp::Node::SharedPtr node, const std::string & prefix)
-: shisen_cpp::ImageConsumer<T>(node, prefix)
+MemberMatConsumer<T>::MemberMatConsumer(rclcpp::Node::SharedPtr node, const std::string & prefix)
+: MatConsumer<T>(node, prefix)
 {
 }
 
 template<typename T>
-void MatConsumer<T>::on_image_changed(const T & image)
+void MemberMatConsumer<T>::on_mat_changed(cv::Mat mat)
 {
   // Call parent's overridden function
-  shisen_cpp::ImageConsumer<T>::on_image_changed(image);
+  MatConsumer<T>::on_mat_changed(mat);
 
-  current_mat_image = image;
-
-  // Call virtual callback
-  on_mat_changed(get_mat());
+  if (on_mat_changed_callback) {
+    on_mat_changed_callback(mat);
+  }
 }
 
 template<typename T>
-void MatConsumer<T>::on_mat_changed(cv::Mat /*mat*/)
+void MemberMatConsumer<T>::set_on_mat_changed(const MatCallback & callback)
 {
-}
-
-template<typename T>
-const MatImage & MatConsumer<T>::get_mat_image() const
-{
-  return current_mat_image;
-}
-
-template<typename T>
-cv::Mat MatConsumer<T>::get_mat() const
-{
-  return (cv::Mat)get_mat_image();
+  on_mat_changed_callback = callback;
 }
 
 }  // namespace shisen_opencv
 
-#endif  // SHISEN_OPENCV__CONSUMER__MAT_CONSUMER_HPP_
+#endif  // SHISEN_OPENCV__CONSUMER__MEMBER_MAT_CONSUMER_HPP_

@@ -22,6 +22,7 @@
 #define SHISEN_OPENCV__SHISEN_OPENCV_HPP_
 
 #include "./consumer/mat_consumer.hpp"
+#include "./consumer/member_mat_consumer.hpp"
 
 #include "./provider/combined_mat_provider.hpp"
 #include "./provider/mat_provider.hpp"
