@@ -46,12 +46,12 @@ TEST(CompileTest, Consumer) {
     //   std::make_shared<shisen_opencv::CombinedMatConsumer>(node, options);
     // }
 
-    // {
-    //   shisen_opencv::CompressedMatConsumer::Options options;
-    //   options.camera_prefix = "foo";
+    {
+      shisen_opencv::MatConsumer::Options options;
+      options.camera_prefix = "foo";
 
-    //   std::make_shared<shisen_opencv::CompressedMatConsumer>(node, options);
-    // }
+      std::make_shared<shisen_opencv::MatConsumer>(node, options);
+    }
 
     // {
     //   shisen_opencv::MemberCompressedMatConsumer::Options options;
@@ -65,13 +65,6 @@ TEST(CompileTest, Consumer) {
     //   options.camera_prefix = "foo";
 
     //   std::make_shared<shisen_opencv::MemberRawMatConsumer>(node, options);
-    // }
-
-    // {
-    //   shisen_opencv::RawMatConsumer::Options options;
-    //   options.camera_prefix = "foo";
-
-    //   std::make_shared<shisen_opencv::RawMatConsumer>(node, options);
     // }
   } catch (...) {
   }

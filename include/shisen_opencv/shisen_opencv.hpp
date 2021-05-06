@@ -25,7 +25,7 @@
 // #include "./node/camera.hpp"
 // #include "./node/viewer.hpp"
 
-// #include "./consumer.hpp"
+#include "./consumer.hpp"
 #include "./provider.hpp"
 #include "./utility.hpp"
 

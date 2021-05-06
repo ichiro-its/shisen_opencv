@@ -21,9 +21,9 @@
 #ifndef SHISEN_OPENCV__CONSUMER_HPP_
 #define SHISEN_OPENCV__CONSUMER_HPP_
 
-#include "./consumer/camera_consumer.hpp"
-#include "./consumer/combined_mat_consumer.hpp"
+// #include "./consumer/camera_consumer.hpp"
+// #include "./consumer/combined_mat_consumer.hpp"
 #include "./consumer/mat_consumer.hpp"
-#include "./consumer/member_mat_consumer.hpp"
+// #include "./consumer/member_mat_consumer.hpp"
 
 #endif  // SHISEN_OPENCV__CONSUMER_HPP_
