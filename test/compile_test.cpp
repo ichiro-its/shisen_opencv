@@ -81,23 +81,13 @@ TEST(CompileTest, Provider) {
   try {
     auto node = std::make_shared<rclcpp::Node>("compile_test");
 
-    // {
-    //   shisen_opencv::CameraProvider::Options options;
-    //   options.camera_prefix = "foo";
-    //   options.enable_raw_image = false;
-    //   options.enable_compressed_image = false;
+    {
+      shisen_opencv::CameraProvider::Options options;
+      options.camera_prefix = "foo";
+      options.compression_quality = 80;
 
-    //   std::make_shared<shisen_opencv::CameraProvider>(node, options);
-    // }
-
-    // {
-    //   shisen_opencv::CombinedMatProvider::Options options;
-    //   options.camera_prefix = "foo";
-    //   options.enable_raw_image = false;
-    //   options.enable_compressed_image = false;
-
-    //   std::make_shared<shisen_opencv::CombinedMatProvider>(node, options);
-    // }
+      std::make_shared<shisen_opencv::CameraProvider>(node, options);
+    }
 
     {
       shisen_opencv::MatProvider::Options options;

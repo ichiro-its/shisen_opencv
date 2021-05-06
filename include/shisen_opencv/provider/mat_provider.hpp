@@ -25,8 +25,6 @@
 #include <rclcpp/rclcpp.hpp>
 #include <shisen_cpp/shisen_cpp.hpp>
 
-#include <string>
-
 #include "../utility.hpp"
 
 namespace shisen_opencv

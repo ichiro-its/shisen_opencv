@@ -24,42 +24,28 @@
 #include <rclcpp/rclcpp.hpp>
 #include <shisen_cpp/shisen_cpp.hpp>
 
-#include <string>
-
-#include "./combined_mat_provider.hpp"
+#include "./mat_provider.hpp"
 
 namespace shisen_opencv
 {
 
-class CameraProvider : public CombinedMatProvider, public shisen_cpp::CaptureSettingProvider
+class CameraProvider : public MatProvider, public shisen_cpp::CaptureSettingProvider
 {
 public:
   struct Options
-    : public virtual CombinedMatProvider::Options,
+    : public virtual MatProvider::Options,
     public virtual shisen_cpp::CaptureSettingProvider::Options
   {
   };
 
-  inline explicit CameraProvider(
-    rclcpp::Node::SharedPtr node, const Options & options = Options());
-
-  inline rclcpp::Node::SharedPtr get_node() const;
-
-private:
-  rclcpp::Node::SharedPtr node;
+  inline explicit CameraProvider(rclcpp::Node::SharedPtr node, const Options & options = Options());
 };
 
 CameraProvider::CameraProvider(
   rclcpp::Node::SharedPtr node, const CameraProvider::Options & options)
-: CombinedMatProvider(node, options),
-  shisen_cpp::CaptureSettingProvider(node, options),
-  node(node)
+: MatProvider(node, options),
+  shisen_cpp::CaptureSettingProvider(node, options)
 {
-}
-
-inline rclcpp::Node::SharedPtr CameraProvider::get_node() const
-{
-  return node;
 }
 
 }  // namespace shisen_opencv
