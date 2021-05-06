@@ -24,19 +24,29 @@
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <shisen_cpp/shisen_cpp.hpp>
 
 #include <memory>
+#include <string>
 
 #include "../utility.hpp"
 
 namespace shisen_opencv
 {
 
-class CameraCapture
+class CameraCapture : public shisen_cpp::CameraNode
 {
 public:
-  struct Options : public virtual CameraCaptureOptions
+  struct Options : public virtual shisen_cpp::CameraNode::Options
   {
+    std::string camera_file_name;
+    int capture_fps;
+
+    Options()
+    : camera_file_name("/dev/video0"),
+      capture_fps(60)
+    {
+    }
   };
 
   explicit CameraCapture(rclcpp::Node::SharedPtr node, const Options & options = Options());
@@ -44,14 +54,10 @@ public:
 
   virtual void on_mat_captured(cv::Mat mat);
 
-  rclcpp::Node::SharedPtr get_node() const;
-
   std::shared_ptr<cv::VideoCapture> get_video_capture() const;
 
 private:
-  rclcpp::Node::SharedPtr node;
-
-  std::shared_ptr<rclcpp::TimerBase> capture_timer;
+  rclcpp::TimerBase::SharedPtr capture_timer;
 
   std::shared_ptr<cv::VideoCapture> video_capture;
 };
