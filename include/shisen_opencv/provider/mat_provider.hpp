@@ -43,8 +43,7 @@ public:
     }
   };
 
-  inline explicit MatProvider(
-    rclcpp::Node::SharedPtr node, const Options & options = Options());
+  inline explicit MatProvider(rclcpp::Node::SharedPtr node, const Options & options = Options());
 
   inline void set_mat(cv::Mat mat);
 

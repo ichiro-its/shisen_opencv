@@ -28,23 +28,12 @@ TEST(CompileTest, Consumer) {
   try {
     auto node = std::make_shared<rclcpp::Node>("compile_test");
 
-    // {
-    //   shisen_opencv::CameraConsumer::Options options;
-    //   options.camera_prefix = "foo";
-    //   options.enable_raw_image = false;
-    //   options.enable_compressed_image = false;
+    {
+      shisen_opencv::CameraConsumer::Options options;
+      options.camera_prefix = "foo";
 
-    //   std::make_shared<shisen_opencv::CameraConsumer>(node, options);
-    // }
-
-    // {
-    //   shisen_opencv::CombinedMatConsumer::Options options;
-    //   options.camera_prefix = "foo";
-    //   options.enable_raw_image = false;
-    //   options.enable_compressed_image = false;
-
-    //   std::make_shared<shisen_opencv::CombinedMatConsumer>(node, options);
-    // }
+      std::make_shared<shisen_opencv::CameraConsumer>(node, options);
+    }
 
     {
       shisen_opencv::MatConsumer::Options options;
@@ -52,20 +41,6 @@ TEST(CompileTest, Consumer) {
 
       std::make_shared<shisen_opencv::MatConsumer>(node, options);
     }
-
-    // {
-    //   shisen_opencv::MemberCompressedMatConsumer::Options options;
-    //   options.camera_prefix = "foo";
-
-    //   std::make_shared<shisen_opencv::MemberCompressedMatConsumer>(node, options);
-    // }
-
-    // {
-    //   shisen_opencv::MemberRawMatConsumer::Options options;
-    //   options.camera_prefix = "foo";
-
-    //   std::make_shared<shisen_opencv::MemberRawMatConsumer>(node, options);
-    // }
   } catch (...) {
   }
 }
