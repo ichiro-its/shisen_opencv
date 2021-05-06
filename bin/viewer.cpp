@@ -35,9 +35,7 @@ int main(int argc, char ** argv)
     "\n"
     "Optional arguments:\n"
     "-h, --help             show this help message and exit\n"
-    "--camera-prefix        prefix name for camera's topics and services\n"
-    "--disable-raw          disable raw image topic\n"
-    "--disable-compressed   disable compressed image topic\n";
+    "--camera-prefix        prefix name for camera's topics and services\n";
 
   // Handle arguments
   try {
@@ -50,10 +48,6 @@ int main(int argc, char ** argv)
           return 1;
         } else if (arg == "--camera-prefix") {
           options.camera_prefix = argv[i++];
-        } else if (arg == "--disable-raw") {
-          options.enable_raw_image = false;
-        } else if (arg == "--disable-compressed") {
-          options.enable_compressed_image = false;
         } else {
           std::cout << "Unknown option `" << arg << "`!\n\n" << help_message << std::endl;
           return 1;

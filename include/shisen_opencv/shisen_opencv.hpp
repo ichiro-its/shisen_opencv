@@ -23,7 +23,7 @@
 
 #include "./node/camera_capture.hpp"
 #include "./node/camera.hpp"
-// #include "./node/viewer.hpp"
+#include "./node/viewer.hpp"
 
 #include "./consumer.hpp"
 #include "./provider.hpp"

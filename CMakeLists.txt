@@ -24,7 +24,7 @@ install(DIRECTORY "include" DESTINATION ".")
 add_library(${PROJECT_NAME}
   "src/node/camera_capture.cpp"
   "src/node/camera.cpp"
-  # "src/node/viewer.cpp"
+  "src/node/viewer.cpp"
   "src/utility/mat_image.cpp")
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -41,9 +41,9 @@ install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION "bin")
 
 add_executable(camera "bin/camera.cpp")
-# add_executable(viewer "bin/viewer.cpp")
+add_executable(viewer "bin/viewer.cpp")
 
-foreach(target camera)
+foreach(target camera viewer)
   target_link_libraries(${target} ${PROJECT_NAME})
 
   install(TARGETS ${target}

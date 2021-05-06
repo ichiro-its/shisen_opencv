@@ -26,7 +26,7 @@ namespace shisen_opencv
 {
 
 Viewer::Viewer(rclcpp::Node::SharedPtr node, const Viewer::Options & options)
-: CombinedMatConsumer(node, options)
+: MatConsumer(node, options)
 {
 }
 

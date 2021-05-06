@@ -29,10 +29,10 @@
 namespace shisen_opencv
 {
 
-class Viewer : public CombinedMatConsumer
+class Viewer : public MatConsumer
 {
 public:
-  struct Options : public virtual CombinedMatConsumer::Options
+  struct Options : public virtual MatConsumer::Options
   {
   };
 
