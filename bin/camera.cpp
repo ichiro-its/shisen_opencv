@@ -19,26 +19,70 @@
 // THE SOFTWARE.
 
 #include <rclcpp/rclcpp.hpp>
-#include <shisen_opencv/camera.hpp>
+#include <shisen_opencv/node/camera.hpp>
 
 #include <memory>
 #include <string>
 
 int main(int argc, char ** argv)
 {
-  if (argc < 2) {
-    std::cout << "Usage: ros2 run shisen_opencv camera <file_name>" << std::endl;
+  rclcpp::init(argc, argv);
+
+  shisen_opencv::Camera::Options options;
+
+  const char * help_message =
+    "Usage: ros2 run shisen_cpp camera [options] [--camera-prefix prefix]\n"
+    "       [--captured-fps fps] [camera_file_name]\n"
+    "\n"
+    "Positional arguments:\n"
+    "camera_file_name       camera's device file name\n"
+    "\n"
+    "Optional arguments:\n"
+    "-h, --help             show this help message and exit\n"
+    "--camera-prefix        prefix name for camera's topics and services\n"
+    "--disable-raw          disable raw image topic\n"
+    "--disable-compressed   disable compressed image topic\n"
+    "--capture-fps          captured frames per second";
+
+  // Handle arguments
+  try {
+    int i = 1;
+    int pos = 0;
+    while (i < argc) {
+      std::string arg = argv[i++];
+      if (arg[0] == '-') {
+        if (arg == "-h" || arg == "--help") {
+          std::cout << help_message << std::endl;
+          return 1;
+        } else if (arg == "--camera-prefix") {
+          options.camera_prefix = argv[i++];
+        } else if (arg == "--disable-raw") {
+          options.enable_raw_image = false;
+        } else if (arg == "--disable-compressed") {
+          options.enable_compressed_image = false;
+        } else if (arg == "--capture-fps") {
+          options.capture_fps = atoi(argv[i++]);
+        } else {
+          std::cout << "Unknown option `" << arg << "`!\n\n" << help_message << std::endl;
+          return 1;
+        }
+      } else if (pos == 0) {
+        options.camera_file_name = arg;
+        ++pos;
+      }
+    }
+  } catch (...) {
+    std::cout << "Invalid arguments!\n\n" << help_message << std::endl;
     return 1;
   }
 
-  std::string file_name = argv[1];
+  auto node = std::make_shared<rclcpp::Node>("camera");
 
-  rclcpp::init(argc, argv);
-
-  auto camera = std::make_shared<shisen_opencv::Camera>("camera");
-
-  if (camera->open(file_name)) {
-    rclcpp::spin(camera);
+  try {
+    auto camera = std::make_shared<shisen_opencv::Camera>(node, options);
+    rclcpp::spin(node);
+  } catch (const std::exception & e) {
+    RCLCPP_ERROR_STREAM(node->get_logger(), "Exception! " << e.what());
   }
 
   rclcpp::shutdown();

@@ -40,15 +40,15 @@ install(TARGETS ${PROJECT_NAME}
   LIBRARY DESTINATION "lib"
   RUNTIME DESTINATION "bin")
 
-# add_executable(camera "bin/camera.cpp")
+add_executable(camera "bin/camera.cpp")
 # add_executable(viewer "bin/viewer.cpp")
 
-# foreach(target camera viewer)
-#   target_link_libraries(${target} ${PROJECT_NAME})
+foreach(target camera)
+  target_link_libraries(${target} ${PROJECT_NAME})
 
-#   install(TARGETS ${target}
-#     DESTINATION "lib/${PROJECT_NAME}")
-# endforeach()
+  install(TARGETS ${target}
+    DESTINATION "lib/${PROJECT_NAME}")
+endforeach()
 
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
