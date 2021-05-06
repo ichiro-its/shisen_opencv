@@ -32,62 +32,53 @@
 namespace shisen_opencv
 {
 
-template<typename T>
-class MatProvider;
-
-using CompressedMatProvider = MatProvider<shisen_cpp::CompressedImage>;
-using RawMatProvider = MatProvider<shisen_cpp::RawImage>;
-
-template<typename T>
-class MatProvider : public shisen_cpp::ImageProvider<T>
+class MatProvider : public shisen_cpp::ImageProvider
 {
 public:
-  struct Options : public virtual shisen_cpp::ImageProvider<T>::Options
+  struct Options : public virtual shisen_cpp::ImageProvider::Options
   {
+    int compression_quality;
+
+    Options()
+    : compression_quality(-1)
+    {
+    }
   };
 
   inline explicit MatProvider(
     rclcpp::Node::SharedPtr node, const Options & options = Options());
 
-  inline void set_mat_image(const MatImage & mat_image);
   inline void set_mat(cv::Mat mat);
 
-  inline const MatImage & get_mat_image() const;
   inline cv::Mat get_mat() const;
 
 private:
   MatImage current_mat_image;
+
+  int compression_quality;
 };
 
-template<typename T>
-MatProvider<T>::MatProvider(rclcpp::Node::SharedPtr node, const MatProvider<T>::Options & options)
-: shisen_cpp::ImageProvider<T>(node, options)
+MatProvider::MatProvider(rclcpp::Node::SharedPtr node, const MatProvider::Options & options)
+: shisen_cpp::ImageProvider(node, options),
+  compression_quality(options.compression_quality)
 {
 }
 
-template<typename T>
-void MatProvider<T>::set_mat_image(const MatImage & mat_image)
+void MatProvider::set_mat(cv::Mat mat)
 {
-  current_mat_image = mat_image;
-  this->set_image((T)get_mat_image());
+  current_mat_image = mat;
+
+  // Set image according to the compression quality
+  if (compression_quality > 0) {
+    set_image(current_mat_image.compress(compression_quality));
+  } else {
+    set_image(current_mat_image);
+  }
 }
 
-template<typename T>
-void MatProvider<T>::set_mat(cv::Mat mat)
+cv::Mat MatProvider::get_mat() const
 {
-  set_mat_image(mat);
-}
-
-template<typename T>
-const MatImage & MatProvider<T>::get_mat_image() const
-{
-  return current_mat_image;
-}
-
-template<typename T>
-cv::Mat MatProvider<T>::get_mat() const
-{
-  return (cv::Mat)get_mat_image();
+  return (cv::Mat)current_mat_image;
 }
 
 }  // namespace shisen_opencv

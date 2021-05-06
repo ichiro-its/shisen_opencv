@@ -26,7 +26,7 @@
 // #include "./node/viewer.hpp"
 
 // #include "./consumer.hpp"
-// #include "./provider.hpp"
+#include "./provider.hpp"
 #include "./utility.hpp"
 
 #endif  // SHISEN_OPENCV__SHISEN_OPENCV_HPP_
