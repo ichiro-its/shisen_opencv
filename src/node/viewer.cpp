@@ -32,7 +32,13 @@ Viewer::Viewer(rclcpp::Node::SharedPtr node, const Viewer::Options & options)
 
 void Viewer::on_mat_changed(cv::Mat mat)
 {
-  cv::imshow("viewer", mat);
+  // Ensure the received mat is not empty
+  if (!mat.empty()) {
+    cv::imshow("viewer", mat);
+    cv::waitKey(1);
+  } else {
+    RCLCPP_WARN_ONCE(get_node()->get_logger(), "Once, received an empty mat!");
+  }
 }
 
 }  // namespace shisen_opencv

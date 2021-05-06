@@ -49,11 +49,15 @@ MatImage::operator shisen_cpp::CompressedImage() const
 {
   shisen_cpp::CompressedImage compressed_image;
 
-  // Encode as a JPEG image with quality of 50
-  std::vector<unsigned char> bytes;
-  cv::imencode(".jpg", mat, bytes, {cv::IMWRITE_JPEG_QUALITY, 50});
+  // Continue even if the serialization is failed
+  try {
+    // Encode as a JPEG image with quality of 50
+    std::vector<unsigned char> bytes;
+    cv::imencode(".jpg", mat, bytes, {cv::IMWRITE_JPEG_QUALITY, 50});
 
-  compressed_image.data = bytes;
+    compressed_image.data = bytes;
+  } catch (...) {
+  }
 
   return compressed_image;
 }
@@ -62,13 +66,17 @@ MatImage::operator shisen_cpp::RawImage() const
 {
   shisen_cpp::RawImage raw_image;
 
-  raw_image.cols = mat.cols;
-  raw_image.rows = mat.rows;
-  raw_image.channels = mat.channels();
+  // Continue even if the serialization is failed
+  try {
+    raw_image.cols = mat.cols;
+    raw_image.rows = mat.rows;
+    raw_image.channels = mat.channels();
 
-  // Copy the mat data to the raw image
-  auto byte_size = mat.total() * mat.elemSize();
-  raw_image.data.assign(mat.data, mat.data + byte_size);
+    // Copy the mat data to the raw image
+    auto byte_size = mat.total() * mat.elemSize();
+    raw_image.data.assign(mat.data, mat.data + byte_size);
+  } catch (...) {
+  }
 
   return raw_image;
 }
@@ -80,27 +88,35 @@ MatImage::operator cv::Mat() const
 
 const MatImage & MatImage::operator=(const shisen_cpp::CompressedImage & compressed_image)
 {
-  mat = cv::imdecode(compressed_image.data, cv::IMREAD_UNCHANGED);
+  // Continue even if the deserialization is failed
+  try {
+    mat = cv::imdecode(compressed_image.data, cv::IMREAD_UNCHANGED);
+  } catch (...) {
+  }
 
   return *this;
 }
 
 const MatImage & MatImage::operator=(const shisen_cpp::RawImage & raw_image)
 {
-  // Determine the mat type from the channel count
-  auto type = CV_8UC1;
-  if (raw_image.channels == 2) {
-    type = CV_8UC2;
-  } else if (raw_image.channels == 3) {
-    type = CV_8UC3;
-  } else if (raw_image.channels == 4) {
-    type = CV_8UC4;
+  // Continue even if the deserialization is failed
+  try {
+    // Determine the mat type from the channel count
+    auto type = CV_8UC1;
+    if (raw_image.channels == 2) {
+      type = CV_8UC2;
+    } else if (raw_image.channels == 3) {
+      type = CV_8UC3;
+    } else if (raw_image.channels == 4) {
+      type = CV_8UC4;
+    }
+
+    mat = cv::Mat(raw_image.rows, raw_image.cols, type);
+
+    // Copy the mat data from the raw image
+    memcpy(mat.data, raw_image.data.data(), raw_image.data.size());
+  } catch (...) {
   }
-
-  mat = cv::Mat(raw_image.rows, raw_image.cols, type);
-
-  // Copy the mat data from the raw image
-  memcpy(mat.data, raw_image.data.data(), raw_image.data.size());
 
   return *this;
 }

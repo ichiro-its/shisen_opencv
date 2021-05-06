@@ -19,27 +19,60 @@
 // THE SOFTWARE.
 
 #include <rclcpp/rclcpp.hpp>
-#include <shisen_opencv/viewer.hpp>
+#include <shisen_opencv/shisen_opencv.hpp>
 
 #include <memory>
 #include <string>
 
 int main(int argc, char ** argv)
 {
-  if (argc < 2) {
-    std::cout << "Usage: ros2 run shisen_opencv viewer <topic_name>" << std::endl;
+  rclcpp::init(argc, argv);
+
+  shisen_opencv::Viewer::Options options;
+
+  const char * help_message =
+    "Usage: ros2 run shisen_cpp viewer [options] [--camera-prefix prefix]\n"
+    "\n"
+    "Optional arguments:\n"
+    "-h, --help             show this help message and exit\n"
+    "--camera-prefix        prefix name for camera's topics and services\n"
+    "--disable-raw          disable raw image topic\n"
+    "--disable-compressed   disable compressed image topic\n";
+
+  // Handle arguments
+  try {
+    int i = 1;
+    while (i < argc) {
+      std::string arg = argv[i++];
+      if (arg[0] == '-') {
+        if (arg == "-h" || arg == "--help") {
+          std::cout << help_message << std::endl;
+          return 1;
+        } else if (arg == "--camera-prefix") {
+          options.camera_prefix = argv[i++];
+        } else if (arg == "--disable-raw") {
+          options.enable_raw_image = false;
+        } else if (arg == "--disable-compressed") {
+          options.enable_compressed_image = false;
+        } else {
+          std::cout << "Unknown option `" << arg << "`!\n\n" << help_message << std::endl;
+          return 1;
+        }
+      }
+    }
+  } catch (...) {
+    std::cout << "Invalid arguments!\n\n" << help_message << std::endl;
     return 1;
   }
 
-  std::string topic_name = argv[1];
+  auto node = std::make_shared<rclcpp::Node>("viewer");
 
-  rclcpp::init(argc, argv);
-
-  auto viewer = std::make_shared<shisen_opencv::Viewer>(
-    "viewer", topic_name
-  );
-
-  rclcpp::spin(viewer);
+  try {
+    auto viewer = std::make_shared<shisen_opencv::Viewer>(node, options);
+    rclcpp::spin(node);
+  } catch (const std::exception & e) {
+    RCLCPP_ERROR_STREAM(node->get_logger(), "Exception! " << e.what());
+  }
 
   rclcpp::shutdown();
 

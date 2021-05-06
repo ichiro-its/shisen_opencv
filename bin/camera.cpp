@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 
 #include <rclcpp/rclcpp.hpp>
-#include <shisen_opencv/node/camera.hpp>
+#include <shisen_opencv/shisen_opencv.hpp>
 
 #include <memory>
 #include <string>

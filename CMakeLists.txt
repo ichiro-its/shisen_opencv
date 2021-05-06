@@ -41,9 +41,9 @@ install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION "bin")
 
 add_executable(camera "bin/camera.cpp")
-# add_executable(viewer "bin/viewer.cpp")
+add_executable(viewer "bin/viewer.cpp")
 
-foreach(target camera)
+foreach(target camera viewer)
   target_link_libraries(${target} ${PROJECT_NAME})
 
   install(TARGETS ${target}
