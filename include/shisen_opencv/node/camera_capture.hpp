@@ -21,6 +21,7 @@
 #ifndef SHISEN_OPENCV__NODE__CAMERA_CAPTURE_HPP_
 #define SHISEN_OPENCV__NODE__CAMERA_CAPTURE_HPP_
 
+#include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
 #include <rclcpp/rclcpp.hpp>
 
@@ -38,8 +39,10 @@ public:
   {
   };
 
-  explicit CameraCapture(rclcpp::Node::SharedPtr node, const Options & options);
+  explicit CameraCapture(rclcpp::Node::SharedPtr node, const Options & options = Options());
   ~CameraCapture();
+
+  virtual void on_mat_captured(cv::Mat mat);
 
   rclcpp::Node::SharedPtr get_node() const;
 
@@ -47,6 +50,8 @@ public:
 
 private:
   rclcpp::Node::SharedPtr node;
+
+  std::shared_ptr<rclcpp::TimerBase> capture_timer;
 
   std::shared_ptr<cv::VideoCapture> video_capture;
 };

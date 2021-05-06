@@ -23,6 +23,7 @@ install(DIRECTORY "include" DESTINATION ".")
 
 add_library(${PROJECT_NAME}
   "src/node/camera_capture.cpp"
+  "src/node/camera.cpp"
   "src/utility/mat_image.cpp")
 
 target_include_directories(${PROJECT_NAME} PUBLIC

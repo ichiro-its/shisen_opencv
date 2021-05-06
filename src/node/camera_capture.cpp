@@ -32,6 +32,7 @@ CameraCapture::CameraCapture(rclcpp::Node::SharedPtr node, const CameraCapture::
 : node(node),
   video_capture(std::make_shared<cv::VideoCapture>())
 {
+  // Try to open the camera
   if (!video_capture->open(options.camera_file_name)) {
     throw std::runtime_error("unable to open camera on `" + options.camera_file_name + "`");
   }
@@ -39,16 +40,43 @@ CameraCapture::CameraCapture(rclcpp::Node::SharedPtr node, const CameraCapture::
   RCLCPP_INFO_STREAM(
     get_node()->get_logger(),
     "Camera capture opened on `" << options.camera_file_name << "`!");
+
+  // Initialize the capture timer
+  capture_timer = get_node()->create_wall_timer(
+    1s / options.capture_fps, [this]() {
+      // Ensure the camera is opened
+      if (!video_capture->isOpened()) {
+        RCLCPP_WARN_ONCE(get_node()->get_logger(), "Once, camera capture had not been opened!");
+        return;
+      }
+
+      // Read captured mat
+      cv::Mat captured_mat;
+      video_capture->read(captured_mat);
+
+      // Ensure the captured mat is not empty
+      if (!captured_mat.empty()) {
+        on_mat_captured(captured_mat);
+      } else {
+        RCLCPP_WARN_ONCE(get_node()->get_logger(), "Once, captured an empty mat!");
+      }
+    });
 }
 
 CameraCapture::~CameraCapture()
 {
+  // Ensure the camera is opened
   if (video_capture->isOpened()) {
+    // Close the camera
     video_capture->release();
     RCLCPP_INFO(get_node()->get_logger(), "Camera capture closed!");
   } else {
     RCLCPP_WARN(get_node()->get_logger(), "Camera capture had not been opened!");
   }
+}
+
+void CameraCapture::on_mat_captured(cv::Mat /*mat*/)
+{
 }
 
 rclcpp::Node::SharedPtr CameraCapture::get_node() const

@@ -22,6 +22,7 @@
 #define SHISEN_OPENCV__SHISEN_OPENCV_HPP_
 
 #include "./node/camera_capture.hpp"
+#include "./node/camera.hpp"
 
 #include "./consumer.hpp"
 #include "./provider.hpp"

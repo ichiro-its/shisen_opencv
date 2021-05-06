@@ -21,53 +21,27 @@
 #ifndef SHISEN_OPENCV__NODE__CAMERA_HPP_
 #define SHISEN_OPENCV__NODE__CAMERA_HPP_
 
-#include <opencv2/videoio.hpp>
 #include <rclcpp/rclcpp.hpp>
-#include <shisen_interfaces/msg/compressed_image.hpp>
-#include <shisen_interfaces/msg/property_event.hpp>
-#include <shisen_interfaces/msg/raw_image.hpp>
-#include <shisen_interfaces/srv/get_properties.hpp>
-#include <shisen_interfaces/srv/set_properties.hpp>
 
-#include <map>
-#include <memory>
-#include <string>
+#include "../provider.hpp"
+#include "./camera_capture.hpp"
 
 namespace shisen_opencv
 {
 
-class Camera : public rclcpp::Node
+class Camera : public CameraCapture, public CameraProvider
 {
 public:
-  explicit Camera(std::string node_name);
-  ~Camera();
+  struct Options : public virtual CameraCapture::Options, public virtual CameraProvider::Options
+  {
+  };
 
-  bool open(std::string file_name);
-  bool close();
+  explicit Camera(rclcpp::Node::SharedPtr node, const Options & options = Options());
 
-private:
-  static const std::map<std::string, int> property_ids;
+  void on_mat_captured(cv::Mat mat) override;
 
-  cv::VideoCapture video_capture;
-
-  std::map<std::string, double> property_map;
-
-  std::shared_ptr<rclcpp::Publisher<shisen_interfaces::msg::RawImage>>
-  raw_image_publisher;
-
-  std::shared_ptr<rclcpp::Publisher<shisen_interfaces::msg::CompressedImage>>
-  compressed_image_publisher;
-
-  std::shared_ptr<rclcpp::Publisher<shisen_interfaces::msg::PropertyEvent>>
-  property_event_publisher;
-
-  std::shared_ptr<rclcpp::Service<shisen_interfaces::srv::GetProperties>>
-  get_properties_service;
-
-  std::shared_ptr<rclcpp::Service<shisen_interfaces::srv::SetProperties>>
-  set_properties_service;
-
-  std::shared_ptr<rclcpp::TimerBase> capture_timer;
+  shisen_cpp::CaptureSetting on_configure_capture_setting(
+    const shisen_cpp::CaptureSetting & capture_setting) override;
 };
 
 }  // namespace shisen_opencv
