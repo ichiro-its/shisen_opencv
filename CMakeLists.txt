@@ -22,9 +22,9 @@ find_package(shisen_cpp REQUIRED)
 install(DIRECTORY "include" DESTINATION ".")
 
 add_library(${PROJECT_NAME}
-  "src/node/camera_capture.cpp"
-  "src/node/camera.cpp"
-  "src/node/viewer.cpp"
+  # "src/node/camera_capture.cpp"
+  # "src/node/camera.cpp"
+  # "src/node/viewer.cpp"
   "src/utility/mat_image.cpp")
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -40,22 +40,22 @@ install(TARGETS ${PROJECT_NAME}
   LIBRARY DESTINATION "lib"
   RUNTIME DESTINATION "bin")
 
-add_executable(camera "bin/camera.cpp")
-add_executable(viewer "bin/viewer.cpp")
+# add_executable(camera "bin/camera.cpp")
+# add_executable(viewer "bin/viewer.cpp")
 
-foreach(target camera viewer)
-  target_link_libraries(${target} ${PROJECT_NAME})
+# foreach(target camera viewer)
+#   target_link_libraries(${target} ${PROJECT_NAME})
 
-  install(TARGETS ${target}
-    DESTINATION "lib/${PROJECT_NAME}")
-endforeach()
+#   install(TARGETS ${target}
+#     DESTINATION "lib/${PROJECT_NAME}")
+# endforeach()
 
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
   find_package(ament_lint_auto REQUIRED)
 
   ament_add_gtest(${PROJECT_NAME}_tests
-    "test/compile_test.cpp"
+    # "test/compile_test.cpp"
     "test/mat_image_test.cpp")
 
   target_link_libraries(${PROJECT_NAME}_tests ${PROJECT_NAME})
