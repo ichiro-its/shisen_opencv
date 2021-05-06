@@ -18,61 +18,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "shisen_opencv/viewer.hpp"
-
 #include <opencv2/highgui.hpp>
-#include <opencv2/imgcodecs.hpp>
 
-#include <memory>
-#include <string>
+#include <shisen_opencv/node/viewer.hpp>
 
 namespace shisen_opencv
 {
 
-using shisen_interfaces::msg::CompressedImage;
-using shisen_interfaces::msg::RawImage;
-
-Viewer::Viewer(std::string node_name, std::string topic_name)
-: rclcpp::Node(node_name)
+Viewer::Viewer(rclcpp::Node::SharedPtr node, const Viewer::Options & options)
+: CombinedMatConsumer(node, options)
 {
-  raw_image_subscription = this->create_subscription<RawImage>(
-    topic_name, 10,
-    [this, topic_name](std::unique_ptr<RawImage> message) {
-      cv::Mat received_frame(
-        cv::Size(message->cols, message->rows),
-        message->type, message->data.data());
+}
 
-      if (!received_frame.empty()) {
-        cv::imshow(topic_name, received_frame);
-        cv::waitKey(1);
-        RCLCPP_DEBUG_ONCE(this->get_logger(), "once, received raw image and display it");
-      } else {
-        RCLCPP_WARN_ONCE(this->get_logger(), "once, received empty raw image");
-      }
-    }
-  );
-
-  RCLCPP_INFO_STREAM(
-    get_logger(), "subscribe raw image on " <<
-      raw_image_subscription->get_topic_name());
-
-  compressed_image_subscription = this->create_subscription<CompressedImage>(
-    topic_name, 10,
-    [this, topic_name](std::unique_ptr<CompressedImage> message) {
-      auto received_frame = cv::imdecode(message->data, cv::IMREAD_UNCHANGED);
-      if (!received_frame.empty()) {
-        cv::imshow(topic_name, received_frame);
-        cv::waitKey(1);
-        RCLCPP_DEBUG_ONCE(this->get_logger(), "once, received compressed image and display it");
-      } else {
-        RCLCPP_WARN_ONCE(this->get_logger(), "once, received empty compressed image");
-      }
-    }
-  );
-
-  RCLCPP_INFO_STREAM(
-    get_logger(), "subscribe compressed image on " <<
-      compressed_image_subscription->get_topic_name());
+void Viewer::on_mat_changed(cv::Mat mat)
+{
+  cv::imshow("viewer", mat);
 }
 
 }  // namespace shisen_opencv

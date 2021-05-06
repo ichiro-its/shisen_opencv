@@ -21,27 +21,24 @@
 #ifndef SHISEN_OPENCV__NODE__VIEWER_HPP_
 #define SHISEN_OPENCV__NODE__VIEWER_HPP_
 
+#include <opencv2/core.hpp>
 #include <rclcpp/rclcpp.hpp>
-#include <shisen_interfaces/msg/compressed_image.hpp>
-#include <shisen_interfaces/msg/raw_image.hpp>
 
-#include <memory>
-#include <string>
+#include "../consumer.hpp"
 
 namespace shisen_opencv
 {
 
-class Viewer : public rclcpp::Node
+class Viewer : public CombinedMatConsumer
 {
 public:
-  Viewer(std::string node_name, std::string topic_name);
+  struct Options : public virtual CombinedMatConsumer::Options
+  {
+  };
 
-private:
-  std::shared_ptr<rclcpp::Subscription<shisen_interfaces::msg::RawImage>>
-  raw_image_subscription;
+  Viewer(rclcpp::Node::SharedPtr node, const Options & options);
 
-  std::shared_ptr<rclcpp::Subscription<shisen_interfaces::msg::CompressedImage>>
-  compressed_image_subscription;
+  void on_mat_changed(cv::Mat mat) override;
 };
 
 }  // namespace shisen_opencv
