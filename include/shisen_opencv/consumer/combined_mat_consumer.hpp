@@ -48,13 +48,13 @@ public:
 
   inline virtual void on_mat_changed(cv::Mat mat);
 
-  inline void enable_raw(const bool & enable);
-  inline void enable_compressed(const bool & enable);
+  inline void enable_raw_image(const bool & enable);
+  inline void enable_compressed_image(const bool & enable);
 
   inline rclcpp::Node::SharedPtr get_node() const;
 
-  inline bool is_raw_enabled() const;
-  inline bool is_compressed_enabled() const;
+  inline bool is_raw_image_enabled() const;
+  inline bool is_compressed_image_enabled() const;
 
   inline const MatImage & get_mat_image() const;
   inline cv::Mat get_mat() const;
@@ -74,15 +74,15 @@ CombinedMatConsumer::CombinedMatConsumer(
 : node(node),
   options(options)
 {
-  this->enable_raw(options.enable_raw);
-  this->enable_compressed(options.enable_compressed);
+  this->enable_raw_image(options.enable_raw_image);
+  this->enable_compressed_image(options.enable_compressed_image);
 }
 
 void CombinedMatConsumer::on_mat_changed(cv::Mat /*mat*/)
 {
 }
 
-void CombinedMatConsumer::enable_raw(const bool & enable)
+void CombinedMatConsumer::enable_raw_image(const bool & enable)
 {
   if (enable) {
     member_raw_mat_provider = std::make_shared<MemberRawMatConsumer>(node, options);
@@ -97,7 +97,7 @@ void CombinedMatConsumer::enable_raw(const bool & enable)
   }
 }
 
-void CombinedMatConsumer::enable_compressed(const bool & enable)
+void CombinedMatConsumer::enable_compressed_image(const bool & enable)
 {
   if (enable) {
     member_compressed_mat_provider = std::make_shared<MemberCompressedMatConsumer>(node, options);
@@ -117,12 +117,12 @@ rclcpp::Node::SharedPtr CombinedMatConsumer::get_node() const
   return node;
 }
 
-bool CombinedMatConsumer::is_raw_enabled() const
+bool CombinedMatConsumer::is_raw_image_enabled() const
 {
   return member_raw_mat_provider != nullptr;
 }
 
-bool CombinedMatConsumer::is_compressed_enabled() const
+bool CombinedMatConsumer::is_compressed_image_enabled() const
 {
   return member_compressed_mat_provider != nullptr;
 }

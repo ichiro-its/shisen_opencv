@@ -18,13 +18,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN_OPENCV__SHISEN_OPENCV_HPP_
-#define SHISEN_OPENCV__SHISEN_OPENCV_HPP_
+#ifndef SHISEN_OPENCV__NODE__CAMERA_CAPTURE_HPP_
+#define SHISEN_OPENCV__NODE__CAMERA_CAPTURE_HPP_
 
-#include "./node/camera_capture.hpp"
+#include <opencv2/videoio.hpp>
+#include <rclcpp/rclcpp.hpp>
 
-#include "./consumer.hpp"
-#include "./provider.hpp"
-#include "./utility.hpp"
+#include <memory>
 
-#endif  // SHISEN_OPENCV__SHISEN_OPENCV_HPP_
+#include "../utility.hpp"
+
+namespace shisen_opencv
+{
+
+class CameraCapture
+{
+public:
+  struct Options : public virtual CameraCaptureOptions
+  {
+  };
+
+  explicit CameraCapture(rclcpp::Node::SharedPtr node, const Options & options);
+  ~CameraCapture();
+
+  rclcpp::Node::SharedPtr get_node() const;
+
+  std::shared_ptr<cv::VideoCapture> get_video_capture() const;
+
+private:
+  rclcpp::Node::SharedPtr node;
+
+  std::shared_ptr<cv::VideoCapture> video_capture;
+};
+
+}  // namespace shisen_opencv
+
+#endif  // SHISEN_OPENCV__NODE__CAMERA_CAPTURE_HPP_

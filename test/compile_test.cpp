@@ -31,8 +31,8 @@ TEST(CompileTest, Consumer) {
     {
       shisen_opencv::CameraConsumer::Options options;
       options.camera_prefix = "foo";
-      options.enable_raw = false;
-      options.enable_compressed = false;
+      options.enable_raw_image = false;
+      options.enable_compressed_image = false;
 
       std::make_shared<shisen_opencv::CameraConsumer>(node, options);
     }
@@ -40,8 +40,8 @@ TEST(CompileTest, Consumer) {
     {
       shisen_opencv::CombinedMatConsumer::Options options;
       options.camera_prefix = "foo";
-      options.enable_raw = false;
-      options.enable_compressed = false;
+      options.enable_raw_image = false;
+      options.enable_compressed_image = false;
 
       std::make_shared<shisen_opencv::CombinedMatConsumer>(node, options);
     }
@@ -84,8 +84,8 @@ TEST(CompileTest, Provider) {
     {
       shisen_opencv::CameraProvider::Options options;
       options.camera_prefix = "foo";
-      options.enable_raw = false;
-      options.enable_compressed = false;
+      options.enable_raw_image = false;
+      options.enable_compressed_image = false;
 
       std::make_shared<shisen_opencv::CameraProvider>(node, options);
     }
@@ -93,8 +93,8 @@ TEST(CompileTest, Provider) {
     {
       shisen_opencv::CombinedMatProvider::Options options;
       options.camera_prefix = "foo";
-      options.enable_raw = false;
-      options.enable_compressed = false;
+      options.enable_raw_image = false;
+      options.enable_compressed_image = false;
 
       std::make_shared<shisen_opencv::CombinedMatProvider>(node, options);
     }

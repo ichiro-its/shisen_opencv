@@ -18,13 +18,47 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN_OPENCV__SHISEN_OPENCV_HPP_
-#define SHISEN_OPENCV__SHISEN_OPENCV_HPP_
+#include <rclcpp/rclcpp.hpp>
+#include <shisen_opencv/node/camera_capture.hpp>
 
-#include "./node/camera_capture.hpp"
+#include <memory>
 
-#include "./consumer.hpp"
-#include "./provider.hpp"
-#include "./utility.hpp"
+namespace shisen_opencv
+{
 
-#endif  // SHISEN_OPENCV__SHISEN_OPENCV_HPP_
+using namespace std::chrono_literals;
+
+CameraCapture::CameraCapture(rclcpp::Node::SharedPtr node, const CameraCapture::Options & options)
+: node(node),
+  video_capture(std::make_shared<cv::VideoCapture>())
+{
+  if (!video_capture->open(options.camera_file_name)) {
+    throw std::runtime_error("unable to open camera on `" + options.camera_file_name + "`");
+  }
+
+  RCLCPP_INFO_STREAM(
+    get_node()->get_logger(),
+    "Camera capture opened on `" << options.camera_file_name << "`!");
+}
+
+CameraCapture::~CameraCapture()
+{
+  if (video_capture->isOpened()) {
+    video_capture->release();
+    RCLCPP_INFO(get_node()->get_logger(), "Camera capture closed!");
+  } else {
+    RCLCPP_WARN(get_node()->get_logger(), "Camera capture had not been opened!");
+  }
+}
+
+rclcpp::Node::SharedPtr CameraCapture::get_node() const
+{
+  return node;
+}
+
+std::shared_ptr<cv::VideoCapture> CameraCapture::get_video_capture() const
+{
+  return video_capture;
+}
+
+}  // namespace shisen_opencv

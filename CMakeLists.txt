@@ -22,6 +22,7 @@ find_package(shisen_cpp REQUIRED)
 install(DIRECTORY "include" DESTINATION ".")
 
 add_library(${PROJECT_NAME}
+  "src/node/camera_capture.cpp"
   "src/utility/mat_image.cpp")
 
 target_include_directories(${PROJECT_NAME} PUBLIC

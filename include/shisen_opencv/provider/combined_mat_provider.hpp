@@ -45,16 +45,16 @@ public:
   inline explicit CombinedMatProvider(
     rclcpp::Node::SharedPtr node, const Options & options = Options());
 
-  inline void enable_raw(const bool & enable);
-  inline void enable_compressed(const bool & enable);
+  inline void enable_raw_image(const bool & enable);
+  inline void enable_compressed_image(const bool & enable);
 
   inline void set_mat_image(const MatImage & mat_image);
   inline void set_mat(cv::Mat mat);
 
   inline rclcpp::Node::SharedPtr get_node() const;
 
-  inline bool is_raw_enabled() const;
-  inline bool is_compressed_enabled() const;
+  inline bool is_raw_image_enabled() const;
+  inline bool is_compressed_image_enabled() const;
 
   inline const MatImage & get_mat_image() const;
   inline cv::Mat get_mat() const;
@@ -74,11 +74,11 @@ CombinedMatProvider::CombinedMatProvider(
 : node(node),
   options(options)
 {
-  this->enable_raw(options.enable_raw);
-  this->enable_compressed(options.enable_compressed);
+  this->enable_raw_image(options.enable_raw_image);
+  this->enable_compressed_image(options.enable_compressed_image);
 }
 
-void CombinedMatProvider::enable_raw(const bool & enable)
+void CombinedMatProvider::enable_raw_image(const bool & enable)
 {
   if (enable) {
     raw_mat_provider = std::make_shared<RawMatProvider>(node, options);
@@ -87,7 +87,7 @@ void CombinedMatProvider::enable_raw(const bool & enable)
   }
 }
 
-void CombinedMatProvider::enable_compressed(const bool & enable)
+void CombinedMatProvider::enable_compressed_image(const bool & enable)
 {
   if (enable) {
     compressed_mat_provider = std::make_shared<CompressedMatProvider>(node, options);
@@ -100,11 +100,11 @@ void CombinedMatProvider::set_mat_image(const MatImage & mat_image)
 {
   current_mat_image = mat_image;
 
-  if (is_raw_enabled()) {
+  if (is_raw_image_enabled()) {
     raw_mat_provider->set_mat_image(get_mat_image());
   }
 
-  if (is_compressed_enabled()) {
+  if (is_compressed_image_enabled()) {
     compressed_mat_provider->set_mat_image(get_mat_image());
   }
 }
@@ -119,12 +119,12 @@ rclcpp::Node::SharedPtr CombinedMatProvider::get_node() const
   return node;
 }
 
-bool CombinedMatProvider::is_raw_enabled() const
+bool CombinedMatProvider::is_raw_image_enabled() const
 {
   return raw_mat_provider != nullptr;
 }
 
-bool CombinedMatProvider::is_compressed_enabled() const
+bool CombinedMatProvider::is_compressed_image_enabled() const
 {
   return compressed_mat_provider != nullptr;
 }

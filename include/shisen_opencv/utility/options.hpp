@@ -28,12 +28,24 @@ namespace shisen_opencv
 
 struct CombinedMatOptions
 {
-  bool enable_raw;
-  bool enable_compressed;
+  bool enable_raw_image;
+  bool enable_compressed_image;
 
   CombinedMatOptions()
-  : enable_raw(true),
-    enable_compressed(true)
+  : enable_raw_image(true),
+    enable_compressed_image(true)
+  {
+  }
+};
+
+struct CameraCaptureOptions
+{
+  std::string camera_file_name;
+  int capture_fps;
+
+  CameraCaptureOptions()
+  : camera_file_name("/dev/video0"),
+    capture_fps(60)
   {
   }
 };
