@@ -1,4 +1,4 @@
-// Copyright 2020-2021 ICHIRO ITS
+// Copyright (c) 2020-2021 ICHIRO ITS
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -18,32 +18,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN_OPENCV__VIEWER_HPP_
-#define SHISEN_OPENCV__VIEWER_HPP_
+#ifndef SHISEN_OPENCV__UTILITY__MAT_IMAGE_HPP_
+#define SHISEN_OPENCV__UTILITY__MAT_IMAGE_HPP_
 
-#include <rclcpp/rclcpp.hpp>
-#include <shisen_interfaces/msg/compressed_image.hpp>
-#include <shisen_interfaces/msg/raw_image.hpp>
-
-#include <memory>
-#include <string>
+#include <shisen_cpp/shisen_cpp.hpp>
+#include <opencv2/core.hpp>
 
 namespace shisen_opencv
 {
 
-class Viewer : public rclcpp::Node
+class MatImage
 {
 public:
-  Viewer(std::string node_name, std::string topic_name);
+  MatImage();
+  explicit MatImage(const shisen_cpp::CompressedImage & compressed_image);
+  explicit MatImage(const shisen_cpp::RawImage & raw_image);
+  explicit MatImage(cv::Mat mat);
+
+  operator shisen_cpp::CompressedImage() const;
+  operator shisen_cpp::RawImage() const;
+  operator cv::Mat() const;
+
+  const MatImage & operator=(const shisen_cpp::CompressedImage & compressed_image);
+  const MatImage & operator=(const shisen_cpp::RawImage & raw_image);
+  const MatImage & operator=(cv::Mat mat);
 
 private:
-  std::shared_ptr<rclcpp::Subscription<shisen_interfaces::msg::RawImage>>
-  raw_image_subscription;
-
-  std::shared_ptr<rclcpp::Subscription<shisen_interfaces::msg::CompressedImage>>
-  compressed_image_subscription;
+  cv::Mat mat;
 };
 
 }  // namespace shisen_opencv
 
-#endif  // SHISEN_OPENCV__VIEWER_HPP_
+#endif  // SHISEN_OPENCV__UTILITY__MAT_IMAGE_HPP_

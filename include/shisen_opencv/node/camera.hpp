@@ -1,4 +1,4 @@
-// Copyright 2020-2021 ICHIRO ITS
+// Copyright (c) 2020-2021 ICHIRO ITS
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -18,30 +18,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#ifndef SHISEN_OPENCV__NODE__CAMERA_HPP_
+#define SHISEN_OPENCV__NODE__CAMERA_HPP_
+
 #include <rclcpp/rclcpp.hpp>
-#include <shisen_opencv/viewer.hpp>
 
-#include <memory>
-#include <string>
+#include "../provider.hpp"
+#include "./camera_capture.hpp"
 
-int main(int argc, char ** argv)
+namespace shisen_opencv
 {
-  if (argc < 2) {
-    std::cout << "Usage: ros2 run shisen_opencv viewer <topic_name>" << std::endl;
-    return 1;
-  }
 
-  std::string topic_name = argv[1];
+class Camera : public CameraCapture, public CameraProvider
+{
+public:
+  struct Options : public virtual CameraCapture::Options, public virtual CameraProvider::Options
+  {
+  };
 
-  rclcpp::init(argc, argv);
+  explicit Camera(rclcpp::Node::SharedPtr node, const Options & options = Options());
 
-  auto viewer = std::make_shared<shisen_opencv::Viewer>(
-    "viewer", topic_name
-  );
+  void on_mat_captured(cv::Mat mat) override;
 
-  rclcpp::spin(viewer);
+  shisen_cpp::CaptureSetting on_configure_capture_setting(
+    const shisen_cpp::CaptureSetting & capture_setting) override;
+};
 
-  rclcpp::shutdown();
+}  // namespace shisen_opencv
 
-  return 0;
-}
+#endif  // SHISEN_OPENCV__NODE__CAMERA_HPP_

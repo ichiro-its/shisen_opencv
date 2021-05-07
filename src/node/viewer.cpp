@@ -1,4 +1,4 @@
-// Copyright 2020-2021 ICHIRO ITS
+// Copyright (c) 2020-2021 ICHIRO ITS
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -18,30 +18,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include <rclcpp/rclcpp.hpp>
-#include <shisen_opencv/camera.hpp>
+#include <opencv2/highgui.hpp>
 
-#include <memory>
-#include <string>
+#include <shisen_opencv/node/viewer.hpp>
 
-int main(int argc, char ** argv)
+namespace shisen_opencv
 {
-  if (argc < 2) {
-    std::cout << "Usage: ros2 run shisen_opencv camera <file_name>" << std::endl;
-    return 1;
-  }
 
-  std::string file_name = argv[1];
-
-  rclcpp::init(argc, argv);
-
-  auto camera = std::make_shared<shisen_opencv::Camera>("camera");
-
-  if (camera->open(file_name)) {
-    rclcpp::spin(camera);
-  }
-
-  rclcpp::shutdown();
-
-  return 0;
+Viewer::Viewer(rclcpp::Node::SharedPtr node, const Viewer::Options & options)
+: CombinedMatConsumer(node, options)
+{
 }
+
+void Viewer::on_mat_changed(cv::Mat mat)
+{
+  // Ensure the received mat is not empty
+  if (!mat.empty()) {
+    cv::imshow("viewer", mat);
+    cv::waitKey(1);
+  } else {
+    RCLCPP_WARN_ONCE(get_node()->get_logger(), "Once, received an empty mat!");
+  }
+}
+
+}  // namespace shisen_opencv
