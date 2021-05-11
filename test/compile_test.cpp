@@ -31,47 +31,15 @@ TEST(CompileTest, Consumer) {
     {
       shisen_opencv::CameraConsumer::Options options;
       options.camera_prefix = "foo";
-      options.enable_raw_image = false;
-      options.enable_compressed_image = false;
 
       std::make_shared<shisen_opencv::CameraConsumer>(node, options);
     }
 
     {
-      shisen_opencv::CombinedMatConsumer::Options options;
-      options.camera_prefix = "foo";
-      options.enable_raw_image = false;
-      options.enable_compressed_image = false;
-
-      std::make_shared<shisen_opencv::CombinedMatConsumer>(node, options);
-    }
-
-    {
-      shisen_opencv::CompressedMatConsumer::Options options;
+      shisen_opencv::MatConsumer::Options options;
       options.camera_prefix = "foo";
 
-      std::make_shared<shisen_opencv::CompressedMatConsumer>(node, options);
-    }
-
-    {
-      shisen_opencv::MemberCompressedMatConsumer::Options options;
-      options.camera_prefix = "foo";
-
-      std::make_shared<shisen_opencv::MemberCompressedMatConsumer>(node, options);
-    }
-
-    {
-      shisen_opencv::MemberRawMatConsumer::Options options;
-      options.camera_prefix = "foo";
-
-      std::make_shared<shisen_opencv::MemberRawMatConsumer>(node, options);
-    }
-
-    {
-      shisen_opencv::RawMatConsumer::Options options;
-      options.camera_prefix = "foo";
-
-      std::make_shared<shisen_opencv::RawMatConsumer>(node, options);
+      std::make_shared<shisen_opencv::MatConsumer>(node, options);
     }
   } catch (...) {
   }
@@ -84,33 +52,17 @@ TEST(CompileTest, Provider) {
     {
       shisen_opencv::CameraProvider::Options options;
       options.camera_prefix = "foo";
-      options.enable_raw_image = false;
-      options.enable_compressed_image = false;
+      options.compression_quality = 80;
 
       std::make_shared<shisen_opencv::CameraProvider>(node, options);
     }
 
     {
-      shisen_opencv::CombinedMatProvider::Options options;
+      shisen_opencv::MatProvider::Options options;
       options.camera_prefix = "foo";
-      options.enable_raw_image = false;
-      options.enable_compressed_image = false;
+      options.compression_quality = 80;
 
-      std::make_shared<shisen_opencv::CombinedMatProvider>(node, options);
-    }
-
-    {
-      shisen_opencv::CompressedMatProvider::Options options;
-      options.camera_prefix = "foo";
-
-      std::make_shared<shisen_opencv::CompressedMatProvider>(node, options);
-    }
-
-    {
-      shisen_opencv::RawMatProvider::Options options;
-      options.camera_prefix = "foo";
-
-      std::make_shared<shisen_opencv::RawMatProvider>(node, options);
+      std::make_shared<shisen_opencv::MatProvider>(node, options);
     }
   } catch (...) {
   }

@@ -31,17 +31,16 @@ class MatImage
 {
 public:
   MatImage();
-  explicit MatImage(const shisen_cpp::CompressedImage & compressed_image);
-  explicit MatImage(const shisen_cpp::RawImage & raw_image);
+  explicit MatImage(const shisen_cpp::Image & image);
   explicit MatImage(cv::Mat mat);
 
-  operator shisen_cpp::CompressedImage() const;
-  operator shisen_cpp::RawImage() const;
+  operator shisen_cpp::Image() const;
   operator cv::Mat() const;
 
-  const MatImage & operator=(const shisen_cpp::CompressedImage & compressed_image);
-  const MatImage & operator=(const shisen_cpp::RawImage & raw_image);
+  const MatImage & operator=(const shisen_cpp::Image & image);
   const MatImage & operator=(cv::Mat mat);
+
+  shisen_cpp::Image compress(int quality);
 
 private:
   cv::Mat mat;

@@ -32,17 +32,16 @@ int main(int argc, char ** argv)
 
   const char * help_message =
     "Usage: ros2 run shisen_cpp camera [options] [--camera-prefix prefix]\n"
-    "       [--captured-fps fps] [camera_file_name]\n"
+    "       [--compression quality] [--captured-fps fps] [camera_file_name]\n"
     "\n"
     "Positional arguments:\n"
-    "camera_file_name       camera's device file name\n"
+    "camera_file_name     camera's device file name\n"
     "\n"
     "Optional arguments:\n"
-    "-h, --help             show this help message and exit\n"
-    "--camera-prefix        prefix name for camera's topics and services\n"
-    "--disable-raw          disable raw image topic\n"
-    "--disable-compressed   disable compressed image topic\n"
-    "--capture-fps          captured frames per second";
+    "-h, --help           show this help message and exit\n"
+    "--camera-prefix      prefix name for camera's topics and services\n"
+    "--compression        compression quality to be used\n"
+    "--capture-fps        captured frames per second";
 
   // Handle arguments
   try {
@@ -56,10 +55,8 @@ int main(int argc, char ** argv)
           return 1;
         } else if (arg == "--camera-prefix") {
           options.camera_prefix = argv[i++];
-        } else if (arg == "--disable-raw") {
-          options.enable_raw_image = false;
-        } else if (arg == "--disable-compressed") {
-          options.enable_compressed_image = false;
+        } else if (arg == "--compression") {
+          options.compression_quality = atoi(argv[i++]);
         } else if (arg == "--capture-fps") {
           options.capture_fps = atoi(argv[i++]);
         } else {

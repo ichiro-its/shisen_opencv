@@ -49,23 +49,25 @@
     ASSERT_MAT_IMAGE_VALUE_EQ(A, B) \
   }
 
-TEST(MatImageTest, RawImageConversion) {
+TEST(MatImageTest, ImageConversion) {
   auto a = shisen_opencv::MatImage(cv::Mat(3, 2, CV_8UC3, cv::Scalar(32)));
-  auto b = shisen_opencv::MatImage((shisen_cpp::RawImage)a);
+  auto b = shisen_opencv::MatImage((shisen_cpp::Image)a);
 
   ASSERT_MAT_IMAGE_EQ(a, b);
 }
 
-TEST(MatImageTest, GrayRawImageConversion) {
+TEST(MatImageTest, GrayImageConversion) {
   auto a = shisen_opencv::MatImage(cv::Mat(3, 2, CV_8UC1, cv::Scalar(64)));
-  auto b = shisen_opencv::MatImage((shisen_cpp::RawImage)a);
+  auto b = shisen_opencv::MatImage((shisen_cpp::Image)a);
 
   ASSERT_MAT_IMAGE_EQ(a, b);
 }
 
 TEST(MatImageTest, CompressedImageConversion) {
   auto a = shisen_opencv::MatImage(cv::Mat(3, 2, CV_8UC3, cv::Scalar(96)));
-  auto b = shisen_opencv::MatImage((shisen_cpp::CompressedImage)a);
+  auto b = shisen_opencv::MatImage(a.compress(100));
+  auto c = shisen_opencv::MatImage(a.compress(50));
 
+  ASSERT_MAT_IMAGE_EQ(a, b);
   ASSERT_MAT_IMAGE_SIZE_EQ(a, b);
 }

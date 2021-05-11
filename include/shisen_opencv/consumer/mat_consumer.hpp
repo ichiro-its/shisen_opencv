@@ -25,51 +25,38 @@
 #include <rclcpp/rclcpp.hpp>
 #include <shisen_cpp/shisen_cpp.hpp>
 
-#include <string>
-
 #include "../utility.hpp"
 
 namespace shisen_opencv
 {
 
-template<typename T>
-class MatConsumer;
-
-using CompressedMatConsumer = MatConsumer<shisen_cpp::CompressedImage>;
-using RawMatConsumer = MatConsumer<shisen_cpp::RawImage>;
-
-template<typename T>
-class MatConsumer : public shisen_cpp::ImageConsumer<T>
+class MatConsumer : public shisen_cpp::ImageConsumer
 {
 public:
-  struct Options : public virtual shisen_cpp::ImageConsumer<T>::Options
+  struct Options : public virtual shisen_cpp::ImageConsumer::Options
   {
   };
 
-  inline explicit MatConsumer(
-    rclcpp::Node::SharedPtr node, const Options & options = Options());
+  inline explicit MatConsumer(rclcpp::Node::SharedPtr node, const Options & options = Options());
 
-  inline void on_image_changed(const T & image) override;
+  inline void on_image_changed(const shisen_cpp::Image & image) override;
   inline virtual void on_mat_changed(cv::Mat mat);
 
-  inline const MatImage & get_mat_image() const;
   inline cv::Mat get_mat() const;
 
 private:
   MatImage current_mat_image;
 };
 
-template<typename T>
-MatConsumer<T>::MatConsumer(rclcpp::Node::SharedPtr node, const MatConsumer<T>::Options & options)
-: shisen_cpp::ImageConsumer<T>(node, options)
+MatConsumer::MatConsumer(rclcpp::Node::SharedPtr node, const MatConsumer::Options & options)
+: shisen_cpp::ImageConsumer(node, options)
 {
 }
 
-template<typename T>
-void MatConsumer<T>::on_image_changed(const T & image)
+void MatConsumer::on_image_changed(const shisen_cpp::Image & image)
 {
   // Call parent's overridden function
-  shisen_cpp::ImageConsumer<T>::on_image_changed(image);
+  shisen_cpp::ImageConsumer::on_image_changed(image);
 
   current_mat_image = image;
 
@@ -77,21 +64,13 @@ void MatConsumer<T>::on_image_changed(const T & image)
   on_mat_changed(get_mat());
 }
 
-template<typename T>
-void MatConsumer<T>::on_mat_changed(cv::Mat /*mat*/)
+void MatConsumer::on_mat_changed(cv::Mat /*mat*/)
 {
 }
 
-template<typename T>
-const MatImage & MatConsumer<T>::get_mat_image() const
+cv::Mat MatConsumer::get_mat() const
 {
-  return current_mat_image;
-}
-
-template<typename T>
-cv::Mat MatConsumer<T>::get_mat() const
-{
-  return (cv::Mat)get_mat_image();
+  return (cv::Mat)current_mat_image;
 }
 
 }  // namespace shisen_opencv

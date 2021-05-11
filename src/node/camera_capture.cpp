@@ -18,7 +18,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include <rclcpp/rclcpp.hpp>
 #include <shisen_opencv/node/camera_capture.hpp>
 
 #include <memory>
@@ -29,7 +28,7 @@ namespace shisen_opencv
 using namespace std::chrono_literals;
 
 CameraCapture::CameraCapture(rclcpp::Node::SharedPtr node, const CameraCapture::Options & options)
-: node(node),
+: shisen_cpp::CameraNode(node, options),
   video_capture(std::make_shared<cv::VideoCapture>())
 {
   // Try to open the camera
@@ -77,11 +76,6 @@ CameraCapture::~CameraCapture()
 
 void CameraCapture::on_mat_captured(cv::Mat /*mat*/)
 {
-}
-
-rclcpp::Node::SharedPtr CameraCapture::get_node() const
-{
-  return node;
 }
 
 std::shared_ptr<cv::VideoCapture> CameraCapture::get_video_capture() const

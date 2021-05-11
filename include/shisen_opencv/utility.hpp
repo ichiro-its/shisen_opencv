@@ -21,7 +21,6 @@
 #ifndef SHISEN_OPENCV__UTILITY_HPP_
 #define SHISEN_OPENCV__UTILITY_HPP_
 
-#include "./utility/options.hpp"
 #include "./utility/mat_image.hpp"
 
 #endif  // SHISEN_OPENCV__UTILITY_HPP_

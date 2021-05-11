@@ -22,7 +22,6 @@
 #define SHISEN_OPENCV__PROVIDER_HPP_
 
 #include "./provider/camera_provider.hpp"
-#include "./provider/combined_mat_provider.hpp"
 #include "./provider/mat_provider.hpp"
 
 #endif  // SHISEN_OPENCV__PROVIDER_HPP_

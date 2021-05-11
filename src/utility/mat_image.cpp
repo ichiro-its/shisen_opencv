@@ -30,14 +30,9 @@ MatImage::MatImage()
 {
 }
 
-MatImage::MatImage(const shisen_cpp::CompressedImage & compressed_image)
+MatImage::MatImage(const shisen_cpp::Image & image)
 {
-  *this = compressed_image;
-}
-
-MatImage::MatImage(const shisen_cpp::RawImage & raw_image)
-{
-  *this = raw_image;
+  *this = image;
 }
 
 MatImage::MatImage(cv::Mat mat)
@@ -45,40 +40,24 @@ MatImage::MatImage(cv::Mat mat)
   *this = mat;
 }
 
-MatImage::operator shisen_cpp::CompressedImage() const
+MatImage::operator shisen_cpp::Image() const
 {
-  shisen_cpp::CompressedImage compressed_image;
+  shisen_cpp::Image image;
 
   // Continue even if the serialization is failed
   try {
-    // Encode as a JPEG image with quality of 50
-    std::vector<unsigned char> bytes;
-    cv::imencode(".jpg", mat, bytes, {cv::IMWRITE_JPEG_QUALITY, 50});
-
-    compressed_image.data = bytes;
-  } catch (...) {
-  }
-
-  return compressed_image;
-}
-
-MatImage::operator shisen_cpp::RawImage() const
-{
-  shisen_cpp::RawImage raw_image;
-
-  // Continue even if the serialization is failed
-  try {
-    raw_image.cols = mat.cols;
-    raw_image.rows = mat.rows;
-    raw_image.channels = mat.channels();
+    image.cols = mat.cols;
+    image.rows = mat.rows;
+    image.channels = mat.channels();
+    image.quality = -1;
 
     // Copy the mat data to the raw image
     auto byte_size = mat.total() * mat.elemSize();
-    raw_image.data.assign(mat.data, mat.data + byte_size);
+    image.data.assign(mat.data, mat.data + byte_size);
   } catch (...) {
   }
 
-  return raw_image;
+  return image;
 }
 
 MatImage::operator cv::Mat() const
@@ -86,35 +65,30 @@ MatImage::operator cv::Mat() const
   return mat;
 }
 
-const MatImage & MatImage::operator=(const shisen_cpp::CompressedImage & compressed_image)
+const MatImage & MatImage::operator=(const shisen_cpp::Image & image)
 {
   // Continue even if the deserialization is failed
   try {
-    mat = cv::imdecode(compressed_image.data, cv::IMREAD_UNCHANGED);
-  } catch (...) {
-  }
+    // Determine whether the image is compressed or not
+    if (image.quality < 0) {
+      // Determine the mat type from the channel count
+      auto type = CV_8UC1;
+      if (image.channels == 2) {
+        type = CV_8UC2;
+      } else if (image.channels == 3) {
+        type = CV_8UC3;
+      } else if (image.channels == 4) {
+        type = CV_8UC4;
+      }
 
-  return *this;
-}
+      mat = cv::Mat(image.rows, image.cols, type);
 
-const MatImage & MatImage::operator=(const shisen_cpp::RawImage & raw_image)
-{
-  // Continue even if the deserialization is failed
-  try {
-    // Determine the mat type from the channel count
-    auto type = CV_8UC1;
-    if (raw_image.channels == 2) {
-      type = CV_8UC2;
-    } else if (raw_image.channels == 3) {
-      type = CV_8UC3;
-    } else if (raw_image.channels == 4) {
-      type = CV_8UC4;
+      // Copy the mat data from the raw image
+      memcpy(mat.data, image.data.data(), image.data.size());
+    } else {
+      // Decode the compressed image
+      mat = cv::imdecode(image.data, cv::IMREAD_UNCHANGED);
     }
-
-    mat = cv::Mat(raw_image.rows, raw_image.cols, type);
-
-    // Copy the mat data from the raw image
-    memcpy(mat.data, raw_image.data.data(), raw_image.data.size());
   } catch (...) {
   }
 
@@ -126,6 +100,28 @@ const MatImage & MatImage::operator=(cv::Mat mat)
   this->mat = mat;
 
   return *this;
+}
+
+shisen_cpp::Image MatImage::compress(int quality)
+{
+  shisen_cpp::Image image;
+
+  // Continue even if the serialization is failed
+  try {
+    image.cols = mat.cols;
+    image.rows = mat.rows;
+    image.channels = mat.channels();
+    image.quality = quality;
+
+    // Encode as a JPEG image
+    std::vector<unsigned char> bytes;
+    cv::imencode(".jpg", mat, bytes, {cv::IMWRITE_JPEG_QUALITY, image.quality});
+
+    image.data = bytes;
+  } catch (...) {
+  }
+
+  return image;
 }
 
 }  // namespace shisen_opencv
