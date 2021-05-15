@@ -14,5 +14,6 @@ jobs:
         uses: ichiro-its/ros2-ci@v1.0.0
         with:
           ros2-distro: foxy
-          apt-packages: libopencv-dev
+          pre-install: sudo apt update && sudo apt install -y curl && curl -s http://repository.ichiro-its.org/debian/setup.bash | bash -s
+          apt-packages: libopencv-dev ros-foxy-shisen-cpp
           external-repos: ichiro-its/shisen

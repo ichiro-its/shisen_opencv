@@ -7,7 +7,7 @@
   <maintainer email="alfi.maulana.f@gmail.com">Alfi Maulana</maintainer>
   <license>MIT License</license>
   <buildtool_depend>ament_cmake_ros</buildtool_depend>
-  <depend>OpenCV</depend>
+  <depend>libopencv-dev</depend>
   <depend>rclcpp</depend>
   <depend>shisen_cpp</depend>
   <test_depend>ament_lint_auto</test_depend>
