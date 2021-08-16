@@ -21,10 +21,14 @@ find_package(shisen_cpp REQUIRED)
 
 install(DIRECTORY "include" DESTINATION ".")
 
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} SHARED
+  "src/consumer/camera_consumer.cpp"
+  "src/consumer/mat_consumer.cpp"
   "src/node/camera_capture.cpp"
   "src/node/camera.cpp"
   "src/node/viewer.cpp"
+  "src/provider/camera_provider.cpp"
+  "src/provider/mat_provider.cpp"
   "src/utility/mat_image.cpp")
 
 target_include_directories(${PROJECT_NAME} PUBLIC

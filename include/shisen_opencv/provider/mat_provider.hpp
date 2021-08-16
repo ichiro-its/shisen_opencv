@@ -43,40 +43,18 @@ public:
     }
   };
 
-  inline explicit MatProvider(rclcpp::Node::SharedPtr node, const Options & options = Options());
+  explicit MatProvider(rclcpp::Node::SharedPtr node, const Options & options = Options());
+  ~MatProvider();
 
-  inline void set_mat(cv::Mat mat);
+  void set_mat(cv::Mat mat);
 
-  inline cv::Mat get_mat() const;
+  cv::Mat get_mat() const;
 
 private:
   MatImage current_mat_image;
 
   int compression_quality;
 };
-
-MatProvider::MatProvider(rclcpp::Node::SharedPtr node, const MatProvider::Options & options)
-: shisen_cpp::ImageProvider(node, options),
-  compression_quality(options.compression_quality)
-{
-}
-
-void MatProvider::set_mat(cv::Mat mat)
-{
-  current_mat_image = mat;
-
-  // Set image according to the compression quality
-  if (compression_quality > 0) {
-    set_image(current_mat_image.compress(compression_quality));
-  } else {
-    set_image(current_mat_image);
-  }
-}
-
-cv::Mat MatProvider::get_mat() const
-{
-  return (cv::Mat)current_mat_image;
-}
 
 }  // namespace shisen_opencv
 

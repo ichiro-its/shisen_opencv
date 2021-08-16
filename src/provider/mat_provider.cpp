@@ -18,37 +18,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN_OPENCV__CONSUMER__MAT_CONSUMER_HPP_
-#define SHISEN_OPENCV__CONSUMER__MAT_CONSUMER_HPP_
-
-#include <opencv2/core.hpp>
-#include <rclcpp/rclcpp.hpp>
-#include <shisen_cpp/shisen_cpp.hpp>
-
-#include "../utility.hpp"
+#include <shisen_opencv/provider/mat_provider.hpp>
 
 namespace shisen_opencv
 {
 
-class MatConsumer : public shisen_cpp::ImageConsumer
+MatProvider::MatProvider(rclcpp::Node::SharedPtr node, const MatProvider::Options & options)
+: shisen_cpp::ImageProvider(node, options),
+  compression_quality(options.compression_quality)
 {
-public:
-  struct Options : public virtual shisen_cpp::ImageConsumer::Options
-  {
-  };
+}
 
-  explicit MatConsumer(rclcpp::Node::SharedPtr node, const Options & options = Options());
-  ~MatConsumer();
+MatProvider::~MatProvider()
+{
+}
 
-  void on_image_changed(const shisen_cpp::Image & image) override;
-  virtual void on_mat_changed(cv::Mat mat);
+void MatProvider::set_mat(cv::Mat mat)
+{
+  current_mat_image = mat;
 
-  cv::Mat get_mat() const;
+  // Set image according to the compression quality
+  if (compression_quality > 0) {
+    set_image(current_mat_image.compress(compression_quality));
+  } else {
+    set_image(current_mat_image);
+  }
+}
 
-private:
-  MatImage current_mat_image;
-};
+cv::Mat MatProvider::get_mat() const
+{
+  return (cv::Mat)current_mat_image;
+}
 
 }  // namespace shisen_opencv
-
-#endif  // SHISEN_OPENCV__CONSUMER__MAT_CONSUMER_HPP_

@@ -38,15 +38,9 @@ public:
   {
   };
 
-  inline explicit CameraProvider(rclcpp::Node::SharedPtr node, const Options & options = Options());
+  explicit CameraProvider(rclcpp::Node::SharedPtr node, const Options & options = Options());
+  ~CameraProvider();
 };
-
-CameraProvider::CameraProvider(
-  rclcpp::Node::SharedPtr node, const CameraProvider::Options & options)
-: MatProvider(node, options),
-  shisen_cpp::CaptureSettingProvider(node, options)
-{
-}
 
 }  // namespace shisen_opencv
 

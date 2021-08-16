@@ -18,37 +18,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN_OPENCV__CONSUMER__MAT_CONSUMER_HPP_
-#define SHISEN_OPENCV__CONSUMER__MAT_CONSUMER_HPP_
-
-#include <opencv2/core.hpp>
-#include <rclcpp/rclcpp.hpp>
-#include <shisen_cpp/shisen_cpp.hpp>
-
-#include "../utility.hpp"
+#include <shisen_opencv/consumer/mat_consumer.hpp>
 
 namespace shisen_opencv
 {
 
-class MatConsumer : public shisen_cpp::ImageConsumer
+MatConsumer::MatConsumer(rclcpp::Node::SharedPtr node, const MatConsumer::Options & options)
+: shisen_cpp::ImageConsumer(node, options)
 {
-public:
-  struct Options : public virtual shisen_cpp::ImageConsumer::Options
-  {
-  };
+}
 
-  explicit MatConsumer(rclcpp::Node::SharedPtr node, const Options & options = Options());
-  ~MatConsumer();
+MatConsumer::~MatConsumer()
+{
+}
 
-  void on_image_changed(const shisen_cpp::Image & image) override;
-  virtual void on_mat_changed(cv::Mat mat);
+void MatConsumer::on_image_changed(const shisen_cpp::Image & image)
+{
+  // Call parent's overridden function
+  shisen_cpp::ImageConsumer::on_image_changed(image);
 
-  cv::Mat get_mat() const;
+  current_mat_image = image;
 
-private:
-  MatImage current_mat_image;
-};
+  // Call virtual callback
+  on_mat_changed(get_mat());
+}
+
+void MatConsumer::on_mat_changed(cv::Mat /*mat*/)
+{
+}
+
+cv::Mat MatConsumer::get_mat() const
+{
+  return (cv::Mat)current_mat_image;
+}
 
 }  // namespace shisen_opencv
-
-#endif  // SHISEN_OPENCV__CONSUMER__MAT_CONSUMER_HPP_

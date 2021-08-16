@@ -18,37 +18,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN_OPENCV__CONSUMER__MAT_CONSUMER_HPP_
-#define SHISEN_OPENCV__CONSUMER__MAT_CONSUMER_HPP_
-
-#include <opencv2/core.hpp>
-#include <rclcpp/rclcpp.hpp>
-#include <shisen_cpp/shisen_cpp.hpp>
-
-#include "../utility.hpp"
+#include <shisen_opencv/provider/camera_provider.hpp>
 
 namespace shisen_opencv
 {
 
-class MatConsumer : public shisen_cpp::ImageConsumer
+CameraProvider::CameraProvider(
+  rclcpp::Node::SharedPtr node, const CameraProvider::Options & options)
+: MatProvider(node, options),
+  shisen_cpp::CaptureSettingProvider(node, options)
 {
-public:
-  struct Options : public virtual shisen_cpp::ImageConsumer::Options
-  {
-  };
+}
 
-  explicit MatConsumer(rclcpp::Node::SharedPtr node, const Options & options = Options());
-  ~MatConsumer();
-
-  void on_image_changed(const shisen_cpp::Image & image) override;
-  virtual void on_mat_changed(cv::Mat mat);
-
-  cv::Mat get_mat() const;
-
-private:
-  MatImage current_mat_image;
-};
+CameraProvider::~CameraProvider()
+{
+}
 
 }  // namespace shisen_opencv
-
-#endif  // SHISEN_OPENCV__CONSUMER__MAT_CONSUMER_HPP_
