@@ -38,15 +38,9 @@ public:
   {
   };
 
-  inline explicit CameraConsumer(rclcpp::Node::SharedPtr node, const Options & options = Options());
+  explicit CameraConsumer(rclcpp::Node::SharedPtr node, const Options & options = Options());
+  ~CameraConsumer();
 };
-
-CameraConsumer::CameraConsumer(
-  rclcpp::Node::SharedPtr node, const CameraConsumer::Options & options)
-: MatConsumer(node, options),
-  CaptureSettingConsumer(node, options)
-{
-}
 
 }  // namespace shisen_opencv
 
