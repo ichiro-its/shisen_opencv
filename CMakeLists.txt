@@ -15,6 +15,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(keisan REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(shisen_cpp REQUIRED)
@@ -37,7 +38,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(${PROJECT_NAME}
-  OpenCV rclcpp shisen_cpp)
+  keisan OpenCV rclcpp shisen_cpp)
 
 install(TARGETS ${PROJECT_NAME}
   EXPORT export_${PROJECT_NAME}
@@ -68,7 +69,7 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-ament_export_dependencies(OpenCV rclcpp shisen_cpp)
+ament_export_dependencies(keisan OpenCV rclcpp shisen_cpp)
 ament_export_include_directories("include")
 ament_export_libraries(${PROJECT_NAME})
 

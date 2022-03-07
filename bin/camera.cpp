@@ -41,7 +41,8 @@ int main(int argc, char ** argv)
     "-h, --help           show this help message and exit\n"
     "--camera-prefix      prefix name for camera's topics and services\n"
     "--compression        compression quality to be used\n"
-    "--capture-fps        captured frames per second";
+    "--capture-fps        captured frames per second"
+    "--field-of-view      for calculation view_v_angle and view_h_angle";
 
   // Handle arguments
   try {
@@ -59,6 +60,8 @@ int main(int argc, char ** argv)
           options.compression_quality = atoi(argv[i++]);
         } else if (arg == "--capture-fps") {
           options.capture_fps = atoi(argv[i++]);
+        } else if (arg == "--field-of-view") {
+          options.field_of_view = atoi(argv[i++]);
         } else {
           std::cout << "Unknown option `" << arg << "`!\n\n" << help_message << std::endl;
           return 1;

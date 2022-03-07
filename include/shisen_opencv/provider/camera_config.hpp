@@ -21,6 +21,7 @@
 #ifndef SHISEN_OPENCV__PROVIDER__CAMERA_CONFIG_HPP_
 #define SHISEN_OPENCV__PROVIDER__CAMERA_CONFIG_HPP_
 
+#include <keisan/keisan.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <shisen_cpp/shisen_cpp.hpp>
 
@@ -33,12 +34,21 @@ public:
   struct Options
     : public virtual shisen_cpp::CameraConfigProvider::Options
   {
+    int field_of_view;
+
+    Options()
+    : field_of_view(-1)
+    {
+    }
   };
 
-  void set_config(shisen_interfaces::msg::CameraConfig config);
+  void set_config(shisen_interfaces::msg::CameraConfig & config);
 
   explicit CameraConfig(rclcpp::Node::SharedPtr node, const Options & options = Options());
   ~CameraConfig();
+
+private:
+  int field_of_view;
 };
 
 }  // namespace shisen_opencv
