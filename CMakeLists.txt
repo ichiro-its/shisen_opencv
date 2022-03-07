@@ -27,6 +27,7 @@ add_library(${PROJECT_NAME} SHARED
   "src/node/camera_capture.cpp"
   "src/node/camera.cpp"
   "src/node/viewer.cpp"
+  "src/provider/camera_config.cpp"
   "src/provider/camera_provider.cpp"
   "src/provider/mat_provider.cpp"
   "src/utility/mat_image.cpp")

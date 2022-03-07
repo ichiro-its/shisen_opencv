@@ -25,7 +25,8 @@ namespace shisen_opencv
 
 Camera::Camera(rclcpp::Node::SharedPtr node, const Camera::Options & options)
 : CameraCapture(node, options),
-  CameraProvider(node, options)
+  CameraProvider(node, options),
+  CameraConfig(node, options)
 {
 }
 
@@ -35,6 +36,13 @@ void Camera::on_mat_captured(cv::Mat mat)
   CameraCapture::on_mat_captured(mat);
 
   set_mat(mat);
+}
+
+void Camera::on_camera_config(shisen_interfaces::msg::CameraConfig config)
+{
+  CameraCapture::on_camera_config(config);
+  
+  set_config(config);
 }
 
 shisen_cpp::CaptureSetting Camera::on_configure_capture_setting(

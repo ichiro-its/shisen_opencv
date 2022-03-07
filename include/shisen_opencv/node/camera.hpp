@@ -29,16 +29,18 @@
 namespace shisen_opencv
 {
 
-class Camera : public CameraCapture, public CameraProvider
+class Camera : public CameraCapture, public CameraProvider, public CameraConfig
 {
 public:
-  struct Options : public virtual CameraCapture::Options, public virtual CameraProvider::Options
+  struct Options : public virtual CameraCapture::Options,
+    public virtual CameraProvider::Options, public virtual CameraConfig::Options
   {
   };
 
   explicit Camera(rclcpp::Node::SharedPtr node, const Options & options = Options());
 
   void on_mat_captured(cv::Mat mat) override;
+  void on_camera_config(shisen_interfaces::msg::CameraConfig config) override;
 
   shisen_cpp::CaptureSetting on_configure_capture_setting(
     const shisen_cpp::CaptureSetting & capture_setting) override;
