@@ -42,7 +42,7 @@ public:
     }
   };
 
-  void set_config(shisen_interfaces::msg::CameraConfig & config);
+  void set_config(shisen_interfaces::msg::CameraConfig & config, int width, int height);
 
   explicit CameraConfig(rclcpp::Node::SharedPtr node, const Options & options = Options());
   ~CameraConfig();

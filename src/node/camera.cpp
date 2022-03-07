@@ -38,11 +38,13 @@ void Camera::on_mat_captured(cv::Mat mat)
   set_mat(mat);
 }
 
-void Camera::on_camera_config(shisen_interfaces::msg::CameraConfig config)
+void Camera::on_camera_config(
+  shisen_interfaces::msg::CameraConfig config,
+  int width, int height)
 {
-  CameraCapture::on_camera_config(config);
-  
-  set_config(config);
+  CameraCapture::on_camera_config(config, width, height);
+
+  set_config(config, width, height);
 }
 
 shisen_cpp::CaptureSetting Camera::on_configure_capture_setting(

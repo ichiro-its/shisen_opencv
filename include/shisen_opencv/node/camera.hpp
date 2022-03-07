@@ -40,7 +40,9 @@ public:
   explicit Camera(rclcpp::Node::SharedPtr node, const Options & options = Options());
 
   void on_mat_captured(cv::Mat mat) override;
-  void on_camera_config(shisen_interfaces::msg::CameraConfig config) override;
+  void on_camera_config(
+    shisen_interfaces::msg::CameraConfig config,
+    int width, int height) override;
 
   shisen_cpp::CaptureSetting on_configure_capture_setting(
     const shisen_cpp::CaptureSetting & capture_setting) override;

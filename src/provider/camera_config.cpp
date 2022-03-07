@@ -34,20 +34,20 @@ CameraConfig::~CameraConfig()
 {
 }
 
-void CameraConfig::set_config(shisen_interfaces::msg::CameraConfig & config)
+void CameraConfig::set_config(shisen_interfaces::msg::CameraConfig & config, int width, int height)
 {
-  float diagonal = pow(config.width * config.width + config.height * config.height, 0.5);
+  float diagonal = pow(width * width + height * height, 0.5);
   float depth = (diagonal / 2) / keisan::make_degree(field_of_view / 2).tan();
 
   float view_h_angle =
-    2 * keisan::signed_arctan(static_cast<float>(config.width / 2), depth).degree();
+    2 * keisan::signed_arctan(static_cast<float>(width / 2), depth).degree();
   float view_v_angle =
-    2 * keisan::signed_arctan(static_cast<float>(config.height / 2), depth).degree();
+    2 * keisan::signed_arctan(static_cast<float>(height / 2), depth).degree();
 
   config.v_angle = view_v_angle;
   config.h_angle = view_h_angle;
 
-  set_camera_config(config);  
+  set_camera_config(config);
 }
 
 }  // namespace shisen_opencv
