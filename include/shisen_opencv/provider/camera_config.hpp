@@ -18,11 +18,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN_OPENCV__PROVIDER_HPP_
-#define SHISEN_OPENCV__PROVIDER_HPP_
+#ifndef SHISEN_OPENCV__PROVIDER__CAMERA_CONFIG_HPP_
+#define SHISEN_OPENCV__PROVIDER__CAMERA_CONFIG_HPP_
 
-#include "./provider/camera_config.hpp"
-#include "./provider/camera_provider.hpp"
-#include "./provider/mat_provider.hpp"
+#include <keisan/keisan.hpp>
+#include <rclcpp/rclcpp.hpp>
+#include <shisen_cpp/shisen_cpp.hpp>
 
-#endif  // SHISEN_OPENCV__PROVIDER_HPP_
+namespace shisen_opencv
+{
+
+class CameraConfig : public shisen_cpp::CameraConfigProvider
+{
+public:
+  struct Options
+    : public virtual shisen_cpp::CameraConfigProvider::Options
+  {
+    int field_of_view;
+
+    Options()
+    : field_of_view(-1)
+    {
+    }
+  };
+
+  void set_config(shisen_interfaces::msg::CameraConfig & config, int width, int height);
+
+  explicit CameraConfig(rclcpp::Node::SharedPtr node, const Options & options = Options());
+  ~CameraConfig();
+
+private:
+  int field_of_view;
+};
+
+}  // namespace shisen_opencv
+
+#endif  // SHISEN_OPENCV__PROVIDER__CAMERA_CONFIG_HPP_

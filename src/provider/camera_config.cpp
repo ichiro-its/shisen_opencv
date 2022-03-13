@@ -18,11 +18,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef SHISEN_OPENCV__PROVIDER_HPP_
-#define SHISEN_OPENCV__PROVIDER_HPP_
+#include <shisen_opencv/provider/camera_config.hpp>
 
-#include "./provider/camera_config.hpp"
-#include "./provider/camera_provider.hpp"
-#include "./provider/mat_provider.hpp"
+namespace shisen_opencv
+{
 
-#endif  // SHISEN_OPENCV__PROVIDER_HPP_
+CameraConfig::CameraConfig(
+  rclcpp::Node::SharedPtr node, const CameraConfig::Options & options)
+: shisen_cpp::CameraConfigProvider(node, options)
+{
+  field_of_view = options.field_of_view;
+}
+
+CameraConfig::~CameraConfig()
+{
+}
+
+void CameraConfig::set_config(shisen_interfaces::msg::CameraConfig & config, int width, int height)
+{
+  float diagonal = pow(width * width + height * height, 0.5);
+  float depth = (diagonal / 2) / keisan::make_degree(field_of_view / 2).tan();
+
+  float view_h_angle =
+    2 * keisan::signed_arctan(static_cast<float>(width / 2), depth).degree();
+  float view_v_angle =
+    2 * keisan::signed_arctan(static_cast<float>(height / 2), depth).degree();
+
+  config.v_angle = view_v_angle;
+  config.h_angle = view_h_angle;
+
+  set_camera_config(config);
+}
+
+}  // namespace shisen_opencv

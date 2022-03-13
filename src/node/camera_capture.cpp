@@ -53,9 +53,12 @@ CameraCapture::CameraCapture(rclcpp::Node::SharedPtr node, const CameraCapture::
       cv::Mat captured_mat;
       video_capture->read(captured_mat);
 
+      shisen_interfaces::msg::CameraConfig config;
+
       // Ensure the captured mat is not empty
       if (!captured_mat.empty()) {
         on_mat_captured(captured_mat);
+        on_camera_config(config, captured_mat.cols, captured_mat.rows);
       } else {
         RCLCPP_WARN_ONCE(get_node()->get_logger(), "Once, captured an empty mat!");
       }
@@ -75,6 +78,12 @@ CameraCapture::~CameraCapture()
 }
 
 void CameraCapture::on_mat_captured(cv::Mat /*mat*/)
+{
+}
+
+void CameraCapture::on_camera_config(
+  shisen_interfaces::msg::CameraConfig config,
+  int width, int height)
 {
 }
 

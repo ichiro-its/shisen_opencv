@@ -53,6 +53,9 @@ public:
   ~CameraCapture();
 
   virtual void on_mat_captured(cv::Mat mat);
+  virtual void on_camera_config(
+    shisen_interfaces::msg::CameraConfig config,
+    int width, int height);
 
   std::shared_ptr<cv::VideoCapture> get_video_capture() const;
 
